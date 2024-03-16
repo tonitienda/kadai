@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/tonitienda/kadai/backend/pkg/tasks"
+	"github.com/tonitienda/kadai/backend-golang-rest/pkg/tasks"
 )
 
 const (

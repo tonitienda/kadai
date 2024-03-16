@@ -1,4 +1,4 @@
-module github.com/tonitienda/kadai/backend
+module github.com/tonitienda/kadai/backend-golang-rest
 
 go 1.21.3
 
