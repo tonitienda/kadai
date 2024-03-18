@@ -1,5 +1,7 @@
 package tasks
 
+import "github.com/tonitienda/kadai/backend-golang-rest/pkg/common"
+
 type InMemoryTasksDB struct {
 	tasksByID    map[string]Task
 	tasksByOwner map[string][]Task
@@ -34,12 +36,19 @@ func (db *InMemoryTasksDB) DeleteTask(id string) error {
 	delete(db.tasksByID, id)
 
 	tasks := db.tasksByOwner[task.OwnerID]
+
+	taskIndex := -1
 	for i, t := range tasks {
 		if t.ID == id {
-			tasks = append(tasks[:i], tasks[i+1:]...)
+			taskIndex = i
 			break
 		}
 	}
-	db.tasksByOwner[task.OwnerID] = tasks
+
+	if taskIndex == -1 {
+		return common.NotFoundError{}
+	}
+
+	db.tasksByOwner[task.OwnerID] = append(tasks[:taskIndex], tasks[taskIndex+1:]...)
 	return nil
 }

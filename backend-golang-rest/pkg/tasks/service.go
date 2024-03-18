@@ -28,7 +28,9 @@ func NewTasksService(ds TasksDataSource) *TasksService {
 }
 
 func (s *TasksService) GetTasks(ownerId string) ([]Task, error) {
-	return s.ds.GetTasks(ownerId)
+	tasks, err := s.ds.GetTasks(ownerId)
+
+	return tasks, err
 }
 
 func (s *TasksService) AddTask(task Task) error {

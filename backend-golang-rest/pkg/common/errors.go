@@ -12,8 +12,16 @@ func (e NotFoundError) Error() string {
 	return "Not found"
 }
 
-type ValidationError struct{}
+type ValidationError struct {
+	message string
+}
 
 func (e ValidationError) Error() string {
-	return "Validation error"
+	return e.message
+}
+
+func NewValidationError(message string) error {
+	return ValidationError{
+		message: message,
+	}
 }
