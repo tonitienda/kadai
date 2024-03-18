@@ -1,10 +1,11 @@
 package tasks
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
+	"github.com/tonitienda/kadai/backend-golang-rest/pkg/common"
 )
 
 type TasksHandler struct {
@@ -36,14 +37,13 @@ func (h *TasksHandler) AddTask(c *gin.Context) error {
 		return err
 	}
 
-	fmt.Println("Json:", json)
 	task := Task{
 		OwnerID:     userId,
 		Title:       json["title"],
 		Description: json["description"],
 		Status:      TaskStatusPending,
 	}
-	fmt.Println("Task:", task)
+	task.ID = uuid.New().String()
 
 	err := h.datasource.AddTask(task)
 
@@ -52,5 +52,29 @@ func (h *TasksHandler) AddTask(c *gin.Context) error {
 	}
 
 	c.JSON(http.StatusOK, NewTaskResponse(task))
+	return nil
+}
+
+// TODO - Check permissions. Only users with permissions
+// on the task should be able to delete it.
+func (h *TasksHandler) DeleteTask(c *gin.Context) error {
+	userId := c.GetString("userId")
+
+	if !common.IsValidUUID(userId) {
+		return common.NewValidationError("Invalid userId")
+	}
+	taskId, found := c.Params.Get("taskID")
+
+	if !found {
+		return common.NewValidationError("taskID not found")
+	}
+
+	err := h.datasource.DeleteTask(taskId)
+
+	if err != nil {
+		return err
+	}
+
+	c.JSON(http.StatusAccepted, nil)
 	return nil
 }

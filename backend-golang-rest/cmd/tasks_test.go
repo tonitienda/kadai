@@ -3,11 +3,11 @@ package main
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
+	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 	"github.com/tonitienda/kadai/backend-golang-rest/pkg/tasks"
 )
@@ -39,6 +39,12 @@ func TestGetTasksNewUser(t *testing.T) {
 
 }
 
+func sendRequest(router *gin.Engine, request *http.Request) *httptest.ResponseRecorder {
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, request)
+	return w
+}
+
 func TestGetAddDeleteTasksUser(t *testing.T) {
 	userId := "3a34557c-d1bd-4286-b639-e1c915209a12"
 
@@ -46,30 +52,25 @@ func TestGetAddDeleteTasksUser(t *testing.T) {
 
 	router := setupRouter()
 
-	w := httptest.NewRecorder()
 	getTasksRequest, _ := http.NewRequest("GET", "/tasks", nil)
 	getTasksRequest.Header.Add("X-User-Id", userId)
 
 	addTasksRequest, _ := http.NewRequest("POST", "/tasks", bytes.NewBuffer(newTaskBody))
 	addTasksRequest.Header.Add("X-User-Id", userId)
 
-	router.ServeHTTP(w, getTasksRequest)
+	w := sendRequest(router, getTasksRequest)
 
 	assert.Equal(t, 200, w.Code)
 	assert.Equal(t, "[]", w.Body.String())
 
-	router.ServeHTTP(w, addTasksRequest)
+	w = sendRequest(router, addTasksRequest)
 
 	assert.Equal(t, 200, w.Code)
-
-	fmt.Println("New Task Response:", w.Body.String())
 
 	var newTaskResponse tasks.SirenResponse[tasks.TaskProperties]
 	err := json.Unmarshal(w.Body.Bytes(), &newTaskResponse)
 
 	assert.NoError(t, err)
-
-	fmt.Println("New Task Response:", newTaskResponse)
 
 	assert.Equal(t, "Do something", newTaskResponse.Properties.Title)
 	assert.Equal(t, "some details about the task", newTaskResponse.Properties.Description)
@@ -78,5 +79,28 @@ func TestGetAddDeleteTasksUser(t *testing.T) {
 
 	// TODO - Assert that the format is a valid UUID
 	assert.NotEmpty(t, newTaskResponse.Properties.ID)
+
+	// Delete task url
+	var deleteTaskURL string
+	for _, action := range newTaskResponse.Actions {
+		if action.Name == "delete-task" {
+			deleteTaskURL = action.Href
+			break
+		}
+	}
+
+	assert.NotEmpty(t, deleteTaskURL)
+
+	deleteTaskRequest, _ := http.NewRequest("DELETE", deleteTaskURL, nil)
+	deleteTaskRequest.Header.Add("X-User-Id", userId)
+
+	w = sendRequest(router, deleteTaskRequest)
+
+	assert.Equal(t, http.StatusAccepted, w.Code)
+
+	// Assert that the task list is empty again
+	w = sendRequest(router, getTasksRequest)
+
+	assert.Equal(t, "[]", w.Body.String())
 
 }

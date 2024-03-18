@@ -44,6 +44,7 @@ func setupRouter() *gin.Engine {
 	{
 		v1.GET("", DummyAuthMiddleware, ErrorHandler(tasksHandler.GetTasks))
 		v1.POST("", DummyAuthMiddleware, ErrorHandler(tasksHandler.AddTask))
+		v1.DELETE("/:taskID", DummyAuthMiddleware, ErrorHandler(tasksHandler.DeleteTask))
 	}
 
 	r.GET("/healthz", func(c *gin.Context) {
