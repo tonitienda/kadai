@@ -19,6 +19,19 @@ func ErrorHandler(h func(c *gin.Context) error) gin.HandlerFunc {
 	}
 }
 
+// Middleware used for UnitTests.
+// For both acceptance tests ad production environments this middleware is not used.
+func DummyAuthMiddleware(c *gin.Context) {
+	userId := c.GetHeader("X-User-Id")
+	if userId == "" {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
+		c.Abort()
+		return
+	}
+	c.Set("userId", userId)
+	c.Next()
+}
+
 func setupRouter() *gin.Engine {
 
 	tasksHandler := tasks.NewTasksHandler(
@@ -29,7 +42,7 @@ func setupRouter() *gin.Engine {
 
 	v1 := r.Group("/tasks")
 	{
-		v1.GET("", ErrorHandler(tasksHandler.GetTasks))
+		v1.GET("", DummyAuthMiddleware, ErrorHandler(tasksHandler.GetTasks))
 	}
 
 	r.GET("/healthz", func(c *gin.Context) {
