@@ -19,3 +19,7 @@ The user shall be able to retrieve their tasks.
 ### Create a new task
 
 The user shall be able to create a new task.
+
+### Delete a task
+
+The user shall be able to delete a task.
