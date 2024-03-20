@@ -1,13 +1,15 @@
-import Image from "next/image";
-import styles from "./page.module.css";
-import { Typography } from "@mui/material";
+import { Typography, Container, Fab, Button } from "@mui/material";
+import TaskList from "../components/TaskList";
 
 export default function Home() {
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <Typography variant="h1">Welcome to Kadai</Typography>
-      </div>
+    <main>
+      <Container maxWidth="sm">
+        <Typography variant="h1">Tasks</Typography>
+        <Typography variant="h3">Manage your tasks with Kadai!</Typography>
+        <Typography variant="body1">Your tasks</Typography>
+        <TaskList />
+      </Container>
     </main>
   );
 }

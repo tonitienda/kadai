@@ -1,4 +1,4 @@
-POST http://localhost:8080/tasks
+POST http://localhost:8080/v0/tasks
 Content-Type: application/json
 X-User-ID: b78fe6be-0642-4cfa-9f19-9cc8e53b129d
 
@@ -6,3 +6,9 @@ X-User-ID: b78fe6be-0642-4cfa-9f19-9cc8e53b129d
     "title": "Task 1",
     "description": "Task 1 description"
 }
+
+### 
+
+GET http://localhost:8080/v0/tasks
+Content-Type: application/json
+X-User-ID: b78fe6be-0642-4cfa-9f19-9cc8e53b129d
