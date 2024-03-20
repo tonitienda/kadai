@@ -8,7 +8,7 @@ One way to achieve this is by sharing the routing and business logic between Cli
 
 For example if customers are retrieved via the `customers` endpoint the client will know that the customer with id `1` can be retrieved via the `customers/1` endpoint.
 
-But also that the `Edition` of the customer can be done using the `PATCH` verb in the `customers/1` endpoint.
+But also tha the `Edition` of the customer can be done using the `PATCH` verb in the `customers/1` endpoint.
 
 Things get more complicated when the client needs to know the actions available for a resource given the status of the resources or the user permissions.
 

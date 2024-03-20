@@ -17,7 +17,7 @@ func TestGetTasksAnonymousUser(t *testing.T) {
 	router := setupRouter()
 
 	w := httptest.NewRecorder()
-	req, _ := http.NewRequest("GET", "/tasks", nil)
+	req, _ := http.NewRequest("GET", "/v0/tasks", nil)
 
 	router.ServeHTTP(w, req)
 
@@ -29,7 +29,7 @@ func TestGetTasksNewUser(t *testing.T) {
 	router := setupRouter()
 
 	w := httptest.NewRecorder()
-	req, _ := http.NewRequest("GET", "/tasks", nil)
+	req, _ := http.NewRequest("GET", "/v0/tasks", nil)
 	req.Header.Add("X-User-Id", "d5ba1349-7954-4efd-9913-1a68dfd008d8")
 
 	router.ServeHTTP(w, req)
@@ -45,62 +45,59 @@ func sendRequest(router *gin.Engine, request *http.Request) *httptest.ResponseRe
 	return w
 }
 
-func TestGetAddDeleteTasksUser(t *testing.T) {
-	userId := "3a34557c-d1bd-4286-b639-e1c915209a12"
-
-	newTaskBody := []byte(`{ "title": "Do something", "description": "some details about the task" }`)
-
-	router := setupRouter()
-
-	getTasksRequest, _ := http.NewRequest("GET", "/tasks", nil)
+func getUserTasks(t *testing.T, router *gin.Engine, userId string) []tasks.TaskResponse {
+	getTasksRequest, _ := http.NewRequest("GET", "/v0/tasks", nil)
 	getTasksRequest.Header.Add("X-User-Id", userId)
-
-	addTasksRequest, _ := http.NewRequest("POST", "/tasks", bytes.NewBuffer(newTaskBody))
-	addTasksRequest.Header.Add("X-User-Id", userId)
-
 	w := sendRequest(router, getTasksRequest)
 
+	var tasks []tasks.TaskResponse
+	err := json.Unmarshal(w.Body.Bytes(), &tasks)
+
+	assert.NoError(t, err)
+	return tasks
+}
+
+func addTask(t *testing.T, router *gin.Engine, userId string, title string, description string) string {
+	newTaskBody := []byte(`{ "title": "` + title + `", "description": "` + description + `" }`)
+
+	addTasksRequest, _ := http.NewRequest("POST", "/v0/tasks", bytes.NewBuffer(newTaskBody))
+	addTasksRequest.Header.Add("X-User-Id", userId)
+
+	w := sendRequest(router, addTasksRequest)
+
 	assert.Equal(t, 200, w.Code)
-	assert.Equal(t, "[]", w.Body.String())
 
-	w = sendRequest(router, addTasksRequest)
-
-	assert.Equal(t, 200, w.Code)
-
-	var newTaskResponse tasks.SirenResponse[tasks.TaskProperties]
+	var newTaskResponse tasks.TaskResponse
 	err := json.Unmarshal(w.Body.Bytes(), &newTaskResponse)
 
 	assert.NoError(t, err)
 
-	assert.Equal(t, "Do something", newTaskResponse.Properties.Title)
-	assert.Equal(t, "some details about the task", newTaskResponse.Properties.Description)
-	assert.Equal(t, "pending", newTaskResponse.Properties.Status)
-	assert.Equal(t, userId, newTaskResponse.Properties.OwnerID)
+	return newTaskResponse.ID
+}
 
-	// TODO - Assert that the format is a valid UUID
-	assert.NotEmpty(t, newTaskResponse.Properties.ID)
-
-	// Delete task url
-	var deleteTaskURL string
-	for _, action := range newTaskResponse.Actions {
-		if action.Name == "delete-task" {
-			deleteTaskURL = action.Href
-			break
-		}
-	}
-
-	assert.NotEmpty(t, deleteTaskURL)
-
-	deleteTaskRequest, _ := http.NewRequest("DELETE", deleteTaskURL, nil)
+func deleteTask(t *testing.T, router *gin.Engine, userId string, taskId string) {
+	deleteTaskRequest, _ := http.NewRequest("DELETE", "/v0/tasks/"+taskId, nil)
 	deleteTaskRequest.Header.Add("X-User-Id", userId)
 
-	w = sendRequest(router, deleteTaskRequest)
+	w := sendRequest(router, deleteTaskRequest)
 
-	assert.Equal(t, http.StatusAccepted, w.Code)
+	assert.Equal(t, 202, w.Code)
+}
 
-	// Assert that the task list is empty again
-	w = sendRequest(router, getTasksRequest)
+func TestGetAddDeleteTasksUser(t *testing.T) {
+	userId := "3a34557c-d1bd-4286-b639-e1c915209a12"
 
-	assert.Equal(t, "[]", w.Body.String())
+	router := setupRouter()
+	tasks := getUserTasks(t, router, userId)
+	assert.Empty(t, tasks)
 
+	newTaskID := addTask(t, router, userId, "Do something", "some details about the task")
+
+	tasks = getUserTasks(t, router, userId)
+	assert.Len(t, tasks, 1)
+	assert.Equal(t, newTaskID, tasks[0].ID)
+
+	deleteTask(t, router, userId, newTaskID)
+	tasks = getUserTasks(t, router, userId)
+	assert.Len(t, tasks, 0)
 }

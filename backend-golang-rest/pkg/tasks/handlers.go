@@ -8,8 +8,27 @@ import (
 	"github.com/tonitienda/kadai/backend-golang-rest/pkg/common"
 )
 
+const (
+	TaskStatusPending = "pending"
+	TaskStatusDone    = "done"
+)
+
+type Task struct {
+	ID          string
+	OwnerID     string
+	Title       string
+	Description string
+	Status      string
+}
+
 type TasksHandler struct {
 	datasource TasksDataSource
+}
+
+type TasksDataSource interface {
+	GetTasks(ownerId string) ([]Task, error)
+	AddTask(task Task) error
+	DeleteTask(id string) error
 }
 
 func NewTasksHandler(ds TasksDataSource) *TasksHandler {
