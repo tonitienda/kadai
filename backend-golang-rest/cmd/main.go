@@ -35,16 +35,17 @@ func DummyAuthMiddleware(c *gin.Context) {
 func setupRouter() *gin.Engine {
 
 	tasksHandler := tasks.NewTasksHandler(
-		tasks.NewTasksService(tasks.NewInMemoryTasksDB()),
+		tasks.NewInMemoryTasksDB(),
 	)
 
 	r := gin.Default()
+	v0 := r.Group("/v0")
 
-	v1 := r.Group("/tasks")
+	tasks := v0.Group("/tasks")
 	{
-		v1.GET("", DummyAuthMiddleware, ErrorHandler(tasksHandler.GetTasks))
-		v1.POST("", DummyAuthMiddleware, ErrorHandler(tasksHandler.AddTask))
-		v1.DELETE("/:taskID", DummyAuthMiddleware, ErrorHandler(tasksHandler.DeleteTask))
+		tasks.GET("", DummyAuthMiddleware, ErrorHandler(tasksHandler.GetTasks))
+		tasks.POST("", DummyAuthMiddleware, ErrorHandler(tasksHandler.AddTask))
+		tasks.DELETE("/:taskID", DummyAuthMiddleware, ErrorHandler(tasksHandler.DeleteTask))
 	}
 
 	r.GET("/healthz", func(c *gin.Context) {
