@@ -44,7 +44,12 @@ func (h *TasksHandler) GetTasks(c *gin.Context) error {
 		return err
 	}
 
-	c.JSON(http.StatusOK, tasks)
+	tasksResponse := make([]TaskResponse, 0, len(tasks))
+	for _, task := range tasks {
+		tasksResponse = append(tasksResponse, NewTaskResponse(task))
+	}
+
+	c.JSON(http.StatusOK, tasksResponse)
 	return nil
 }
 
