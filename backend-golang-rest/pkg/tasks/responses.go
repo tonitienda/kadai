@@ -9,11 +9,5 @@ type TaskResponse struct {
 }
 
 func NewTaskResponse(task Task) TaskResponse {
-	return TaskResponse{
-		ID:          task.ID,
-		OwnerID:     task.OwnerID,
-		Title:       task.Title,
-		Description: task.Description,
-		Status:      task.Status,
-	}
+	return TaskResponse(task)
 }

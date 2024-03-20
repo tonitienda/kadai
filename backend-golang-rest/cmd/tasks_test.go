@@ -75,13 +75,17 @@ func addTask(t *testing.T, router *gin.Engine, userId string, title string, desc
 	return newTaskResponse.ID
 }
 
-func deleteTask(t *testing.T, router *gin.Engine, userId string, taskId string) {
+func deleteTask(t *testing.T, router *gin.Engine, userId string, taskId string, status int) {
 	deleteTaskRequest, _ := http.NewRequest("DELETE", "/v0/tasks/"+taskId, nil)
 	deleteTaskRequest.Header.Add("X-User-Id", userId)
 
 	w := sendRequest(router, deleteTaskRequest)
 
-	assert.Equal(t, 202, w.Code)
+	assert.Equal(t, status, w.Code)
+}
+
+func deleteTaskAccepted(t *testing.T, router *gin.Engine, userId string, taskId string) {
+	deleteTask(t, router, userId, taskId, http.StatusAccepted)
 }
 
 func TestGetAddDeleteTasksUser(t *testing.T) {
@@ -97,7 +101,104 @@ func TestGetAddDeleteTasksUser(t *testing.T) {
 	assert.Len(t, tasks, 1)
 	assert.Equal(t, newTaskID, tasks[0].ID)
 
-	deleteTask(t, router, userId, newTaskID)
+	deleteTaskAccepted(t, router, userId, newTaskID)
 	tasks = getUserTasks(t, router, userId)
 	assert.Len(t, tasks, 0)
+}
+
+func TestGetTasksNoAuthHeader(t *testing.T) {
+	router := setupRouter()
+
+	getTasksRequest, _ := http.NewRequest("GET", "/v0/tasks", nil)
+	w := sendRequest(router, getTasksRequest)
+	assert.Equal(t, 401, w.Code)
+}
+
+func TestGetTasksNoUser(t *testing.T) {
+	router := setupRouter()
+
+	getTasksRequest, _ := http.NewRequest("GET", "/v0/tasks", nil)
+	getTasksRequest.Header.Add("X-User-Id", "")
+	w := sendRequest(router, getTasksRequest)
+	assert.Equal(t, 401, w.Code)
+}
+
+func TestTryDeleteDifferentUserTask(t *testing.T) {
+	userId := "3a34557c-d1bd-4286-b639-e1c915209a12"
+	otherUserId := "d001ab25-83ee-4625-81f8-f80d06e2232f"
+
+	router := setupRouter()
+
+	newTaskID := addTask(t, router, userId, "Do something", "some details about the task")
+
+	tasks := getUserTasks(t, router, userId)
+	assert.Len(t, tasks, 1)
+
+	deleteTask(t, router, otherUserId, newTaskID, http.StatusForbidden)
+	tasks = getUserTasks(t, router, userId)
+	assert.Len(t, tasks, 1)
+
+	deleteTask(t, router, userId, newTaskID, http.StatusAccepted)
+	tasks = getUserTasks(t, router, userId)
+	assert.Len(t, tasks, 0)
+
+}
+
+func TestTryDeleteWithoutTaskID(t *testing.T) {
+	userId := "3a34557c-d1bd-4286-b639-e1c915209a12"
+	router := setupRouter()
+
+	newTaskID := addTask(t, router, userId, "Do something", "some details about the task")
+
+	tasks := getUserTasks(t, router, userId)
+	assert.Len(t, tasks, 1)
+
+	// This should be a 400 since task ID is missing but
+	// Gin finds that the param is not correct and returns a 404
+	// Because there is no endpoint /tasks with DELETE verb
+	deleteTask(t, router, userId, "", http.StatusNotFound)
+	tasks = getUserTasks(t, router, userId)
+	assert.Len(t, tasks, 1)
+
+	deleteTask(t, router, userId, newTaskID, http.StatusAccepted)
+	tasks = getUserTasks(t, router, userId)
+	assert.Len(t, tasks, 0)
+
+}
+func TestTryDeleteWithNonExistingTaskID(t *testing.T) {
+	userId := "3a34557c-d1bd-4286-b639-e1c915209a12"
+	router := setupRouter()
+
+	newTaskID := addTask(t, router, userId, "Do something", "some details about the task")
+
+	tasks := getUserTasks(t, router, userId)
+	assert.Len(t, tasks, 1)
+
+	deleteTask(t, router, userId, "7227f1ac-b965-4716-9d2d-ed4c19acf585", http.StatusNotFound)
+	tasks = getUserTasks(t, router, userId)
+	assert.Len(t, tasks, 1)
+
+	deleteTask(t, router, userId, newTaskID, http.StatusAccepted)
+	tasks = getUserTasks(t, router, userId)
+	assert.Len(t, tasks, 0)
+
+}
+
+func TestTryDeleteWithWrongTaskID(t *testing.T) {
+	userId := "3a34557c-d1bd-4286-b639-e1c915209a12"
+	router := setupRouter()
+
+	newTaskID := addTask(t, router, userId, "Do something", "some details about the task")
+
+	tasks := getUserTasks(t, router, userId)
+	assert.Len(t, tasks, 1)
+
+	deleteTask(t, router, userId, "-", http.StatusBadRequest)
+	tasks = getUserTasks(t, router, userId)
+	assert.Len(t, tasks, 1)
+
+	deleteTask(t, router, userId, newTaskID, http.StatusAccepted)
+	tasks = getUserTasks(t, router, userId)
+	assert.Len(t, tasks, 0)
+
 }
