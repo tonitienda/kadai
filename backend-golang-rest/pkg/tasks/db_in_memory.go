@@ -23,6 +23,12 @@ func (db *InMemoryTasksDB) GetTasks(ownerID string) ([]Task, error) {
 	return tasks, nil
 }
 
+func (db *InMemoryTasksDB) GetTask(taskID string) (Task, bool) {
+	task, ok := db.tasksByID[taskID]
+
+	return task, ok
+}
+
 func (db *InMemoryTasksDB) AddTask(task Task) error {
 
 	db.tasksByID[task.ID] = task

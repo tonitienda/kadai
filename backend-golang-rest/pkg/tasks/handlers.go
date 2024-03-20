@@ -27,6 +27,7 @@ type TasksHandler struct {
 
 type TasksDataSource interface {
 	GetTasks(ownerId string) ([]Task, error)
+	GetTask(id string) (Task, bool)
 	AddTask(task Task) error
 	DeleteTask(id string) error
 }
@@ -74,21 +75,42 @@ func (h *TasksHandler) AddTask(c *gin.Context) error {
 	return nil
 }
 
-// TODO - Check permissions. Only users with permissions
-// on the task should be able to delete it.
+func canDeleteTask(userId string, task Task) error {
+	if task.OwnerID != userId {
+		return common.NewForbiddenError("You can only delete your own tasks")
+	}
+	return nil
+}
+
 func (h *TasksHandler) DeleteTask(c *gin.Context) error {
 	userId := c.GetString("userId")
 
 	if !common.IsValidUUID(userId) {
 		return common.NewValidationError("Invalid userId")
 	}
-	taskId, found := c.Params.Get("taskID")
+	taskId, taskIdParamFound := c.Params.Get("taskID")
 
-	if !found {
+	if !taskIdParamFound {
 		return common.NewValidationError("taskID not found")
 	}
 
-	err := h.datasource.DeleteTask(taskId)
+	if !common.IsValidUUID(taskId) {
+		return common.NewValidationError("Invalid taskID")
+	}
+
+	task, taskFound := h.datasource.GetTask(taskId)
+
+	if !taskFound {
+		return common.NewNotFoundError("Task not found")
+	}
+
+	err := canDeleteTask(userId, task)
+
+	if err != nil {
+		return err
+	}
+
+	err = h.datasource.DeleteTask(taskId)
 
 	if err != nil {
 		return err
