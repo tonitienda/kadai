@@ -6,6 +6,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - 8080:8080
+    env_file:
+      - .env
   webapp:
     build:
       context: ./webapp-react
@@ -14,3 +16,5 @@ services:
       - 3000:3000
     depends_on:
       - backend
+    volumes:
+      - .env:/app/.env.local

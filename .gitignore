@@ -1,4 +1,4 @@
 .vscode
-
+.env
 coverage.out
 coverage.html

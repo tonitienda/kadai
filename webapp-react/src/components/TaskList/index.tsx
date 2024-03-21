@@ -36,7 +36,14 @@ type Task = {
 
 export default async function TasksList() {
   console.log("TasksList");
-  const tasks = await getTasks();
+
+  let tasks = [];
+  try {
+    tasks = await getTasks();
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
 
   return (
     <>

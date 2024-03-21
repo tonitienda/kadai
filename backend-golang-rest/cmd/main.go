@@ -61,6 +61,12 @@ func setupRouter() *gin.Engine {
 	r := gin.Default()
 	v0 := r.Group("/v0")
 
+	if gin.Mode() == gin.TestMode {
+		v0.Use(DummyAuthMiddleware)
+	} else {
+		v0.Use(TokenAuthMiddleware)
+	}
+
 	tasks := v0.Group("/tasks")
 	{
 		tasks.GET("", DummyAuthMiddleware, ErrorHandler(tasksHandler.GetTasks))
