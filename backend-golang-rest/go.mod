@@ -1,6 +1,6 @@
 module github.com/tonitienda/kadai/backend-golang-rest
 
-go 1.21.3
+go 1.22.1
 
 require (
 	github.com/gin-gonic/gin v1.9.1
