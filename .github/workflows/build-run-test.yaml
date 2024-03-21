@@ -10,5 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Build Docker image
+      - name: Build Golang Rest Backend Docker image
         run: docker build -t backend-golang-rest backend-golang-rest
+      - name: Build React WebApp Docker image
+        run: docker build -t webapp-react webapp-react
