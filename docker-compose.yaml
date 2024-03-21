@@ -1,0 +1,16 @@
+version: '3.7'
+services:
+  backend:
+    build:
+      context: ./backend-golang-rest
+      dockerfile: Dockerfile
+    ports:
+      - 8080:8080
+  webapp:
+    build:
+      context: ./webapp-react
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+    depends_on:
+      - backend
