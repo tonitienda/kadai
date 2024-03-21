@@ -1,8 +1,8 @@
 # Sprint 001
 
-- [ ] Prepare docker-compose to initialise FrontEnd and Backend 
-  - [ ] Prepare Dockerfile for React App
-  - [ ] Prepare Dockerfile for Golang Rest-Backend
+- [x] Prepare docker-compose to initialise FrontEnd and Backend 
+  - [x] Prepare Dockerfile for React App
+  - [x] Prepare Dockerfile for Golang Rest-Backend
 - [ ] MVP React App
   - [ ] Add Login via Auth0
   - [ ] Add Tasks
