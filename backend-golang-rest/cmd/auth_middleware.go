@@ -11,29 +11,44 @@ import (
 
 var mySigningKey = []byte(os.Getenv("AUTH0_SIGNING_SECRET")) // The secret you get from Auth0
 
-func TokenAuthMiddleware(c *gin.Context) {
-	tokenString := c.Request.Header.Get("Authorization")[7:] // Skip "Bearer "
+type Auth interface {
+	GetUserIdBySub(sub string) (string, bool)
+}
 
-	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+func TokenAuthMiddleware(auth Auth) gin.HandlerFunc {
+
+	return func(c *gin.Context) {
+		tokenString := c.Request.Header.Get("Authorization")[7:] // Skip "Bearer "
+
+		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+				return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+			}
+			return mySigningKey, nil
+		})
+
+		if err != nil {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
+			c.Abort()
+			return
 		}
-		return mySigningKey, nil
-	})
 
-	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
-		c.Abort()
-		return
-	}
+		if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+			sub := claims["sub"]
+			userId, ok := auth.GetUserIdBySub(sub.(string))
 
-	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-		userId := claims["sub"]
-		c.Set("userId", userId)
-		c.Next()
-	} else {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
-		c.Abort()
-		return
+			if !ok {
+				c.JSON(http.StatusUnauthorized, gin.H{"error": "User could not be authenticated"})
+				c.Abort()
+				return
+			}
+
+			c.Set("userId", userId)
+			c.Next()
+		} else {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
+			c.Abort()
+			return
+		}
 	}
 }

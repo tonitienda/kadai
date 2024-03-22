@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/tonitienda/kadai/backend-golang-rest/pkg/authentication"
 	"github.com/tonitienda/kadai/backend-golang-rest/pkg/common"
 	"github.com/tonitienda/kadai/backend-golang-rest/pkg/tasks"
 )
@@ -57,6 +58,7 @@ func setupRouter() *gin.Engine {
 	tasksHandler := tasks.NewTasksHandler(
 		tasks.NewInMemoryTasksDB(),
 	)
+	authenticator := authentication.NewAuthenticator(authentication.NewInMemoryAuthDB())
 
 	r := gin.Default()
 	v0 := r.Group("/v0")
@@ -64,14 +66,14 @@ func setupRouter() *gin.Engine {
 	if gin.Mode() == gin.TestMode {
 		v0.Use(DummyAuthMiddleware)
 	} else {
-		v0.Use(TokenAuthMiddleware)
+		v0.Use(TokenAuthMiddleware(authenticator))
 	}
 
 	tasks := v0.Group("/tasks")
 	{
-		tasks.GET("", DummyAuthMiddleware, ErrorHandler(tasksHandler.GetTasks))
-		tasks.POST("", DummyAuthMiddleware, ErrorHandler(tasksHandler.AddTask))
-		tasks.DELETE("/:taskID", DummyAuthMiddleware, ErrorHandler(tasksHandler.DeleteTask))
+		tasks.GET("", ErrorHandler(tasksHandler.GetTasks))
+		tasks.POST("", ErrorHandler(tasksHandler.AddTask))
+		tasks.DELETE("/:taskID", ErrorHandler(tasksHandler.DeleteTask))
 	}
 
 	r.GET("/healthz", func(c *gin.Context) {
