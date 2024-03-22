@@ -32,13 +32,13 @@ Kadai["Kadai
 
 Software that allows users to manage their tasks"]
 
-Authentik["Authentik
+Auth0["Auth0
 [Software System]
 
 Software that handles the authentication and authorization of the users."]
 
 User -- "manages tasks using" --> Kadai
-Kadai -- "handles authentication using" --> Authentik
+Kadai -- "handles authentication using" --> Auth0
 
 
 classDef person fill:#08427b
@@ -47,7 +47,7 @@ classDef external fill:#999999
 
 class User person
 class Kadai system
-class Authentik external
+class Auth0 external
 ```
 
 ### 2.2 Kadai System Architecture
@@ -86,7 +86,7 @@ Server that handles the business logic and data storage.
 [Golang]"]
 end
 
-Authentik["Authentik
+Auth0["Auth0
 [Software System]
 
 Software that handles the authentication and authorization of the users."]
@@ -99,10 +99,9 @@ ReactWebApp -- "communicates with" --> Backend
 HtmxWebApp -- "communicates with" --> Backend
 MobileApp -- "communicates with" --> Backend
 
-Backend -- "handles authentication using" --> Authentik
-ReactWebApp -- "gets user token using" --> Authentik
-HtmxWebApp -- "gets user token using" --> Authentik
-MobileApp -- "gets user token using" --> Authentik
+ReactWebApp -- "gets user token using" --> Auth0
+HtmxWebApp -- "gets user token using" --> Auth0
+MobileApp -- "gets user token using" --> Auth0
 
 
 classDef person fill:#08427b
@@ -111,7 +110,7 @@ classDef external fill:#999999
 
 class User person
 class ReactWebApp,HtmxWebApp,MobileApp,Backend system
-class Authentik external
+class Auth0 external
 ```
 
 ### 2.3 Backend Architecture
@@ -188,7 +187,7 @@ subgraph Backend
 
 end
 
-Authentik["Authentik
+Auth0["Auth0
 [Software System]
 
 Software that handles the authentication and authorization of the users."]
@@ -197,10 +196,9 @@ ReactWebApp -- "communicates with" --> JsonApi
 HtmxWebApp -- "communicates with" --> HTMXApi
 MobileApp -- "communicates with" --> JsonApi
 
-AuthMw -- "handles authentication using" --> Authentik
-ReactWebApp -- "gets user token using" --> Authentik
-HtmxWebApp -- "gets user token using" --> Authentik
-MobileApp -- "gets user token using" --> Authentik
+ReactWebApp -- "gets user token using" --> Auth0
+HtmxWebApp -- "gets user token using" --> Auth0
+MobileApp -- "gets user token using" --> Auth0
 
 
 JsonApi -- "manages tasks data using" --> Core
@@ -212,5 +210,5 @@ classDef system fill:#1168bd
 classDef external fill:#999999
 
 class AuthMw,JsonApi,HTMXApi,Core,DataAccess,DataBase system
-class ReactWebApp,HtmxWebApp,MobileApp,Authentik external
+class ReactWebApp,HtmxWebApp,MobileApp,Auth0 external
 ```
