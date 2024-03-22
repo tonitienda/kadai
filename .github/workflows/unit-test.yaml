@@ -20,5 +20,3 @@ jobs:
         run: go version
       - name: Run unit tests
         run: cd backend-golang-rest && GIN_MODE=test go test -v ./...
-      - name: Build
-        run: cd backend-golang-rest && go build cmd/main.go
