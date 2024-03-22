@@ -5,7 +5,7 @@ WORKDIR /app
 
 COPY . .
 
-RUN go build -o server cmd/main.go
+RUN cd cmd && go build -o ../server
 
 # Stage 2: Create a minimal runtime image
 FROM alpine:3.19

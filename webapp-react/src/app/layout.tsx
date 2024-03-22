@@ -3,6 +3,8 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { ThemeProvider } from "@mui/material/styles";
 import theme from "../theme";
+import { UserProvider } from "@auth0/nextjs-auth0/client";
+import ProfileClient from "@/components/ProfileClient";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,11 +20,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-        <AppRouterCacheProvider>
-          <ThemeProvider theme={theme}>{children}</ThemeProvider>
-        </AppRouterCacheProvider>
-      </body>
+      <UserProvider>
+        <body className={inter.className}>
+          <ProfileClient />
+          <AppRouterCacheProvider>
+            <ThemeProvider theme={theme}>{children}</ThemeProvider>
+          </AppRouterCacheProvider>
+        </body>
+      </UserProvider>
     </html>
   );
 }
