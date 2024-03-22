@@ -4,7 +4,7 @@
   - [x] Prepare Dockerfile for React App
   - [x] Prepare Dockerfile for Golang Rest-Backend
 - [ ] MVP React App
-  - [ ] Add Login via Auth0
+  - [x] Add Login via Auth0
   - [ ] Add Tasks
   - [ ] Delete Tasks
   - [ ] Improve UI
