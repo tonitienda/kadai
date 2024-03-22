@@ -6,10 +6,6 @@ export async function getTasks() {
   const res = await fetch("http://backend:8080/v0/tasks", {
     cache: "no-store",
     headers: {
-      // FIXME: user id should be taken from the access token.
-      // With this setting and the current implementation, the user ID will
-      // be the same for all users.
-      "X-User-ID": "b78fe6be-0642-4cfa-9f19-9cc8e53b129d",
       Authorization: "Bearer " + accessTokenResponse.accessToken || "",
     },
   });
