@@ -15,4 +15,8 @@ test-coverage:
     cd backend-golang-rest && GIN_MODE=test go test ./... -cover -coverpkg=./... -count=1 -coverprofile=coverage.out
     cd backend-golang-rest && go tool cover -html=coverage.out -o coverage.html
 
+start-frontend:
+    cp .env webapp-react/.env.local
+    cd webapp-react && BACKEND_BASE_URL="http://localhost:8080" npm run dev
+
 

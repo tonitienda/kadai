@@ -1,3 +1,5 @@
+"use client";
+
 import * as React from "react";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
@@ -35,8 +37,6 @@ type Task = {
 };
 
 export default async function TasksList() {
-  console.log("TasksList");
-
   let tasks = [];
   try {
     tasks = await getTasks();
