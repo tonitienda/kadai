@@ -1,5 +1,12 @@
+start:
+    docker-compose up
+
+dev:
+    docker-compose -f docker-compose.yaml -f docker-compose.dev.yaml up
+
+
 start-backend:
-    cd backend-golang-rest && go run cmd/main.go
+    source .env && cd backend-golang-rest/cmd && go run .
 
 unit-test:
     cd backend-golang-rest && GIN_MODE=test go test ./... -v

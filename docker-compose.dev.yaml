@@ -1,0 +1,8 @@
+version: '3.7'
+services:
+  webapp:
+    build:
+      target: build
+    volumes:
+      - ./webapp-react:/app
+    command: npm run dev
