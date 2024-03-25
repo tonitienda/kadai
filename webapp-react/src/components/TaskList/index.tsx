@@ -9,6 +9,7 @@ import ListItemAvatar from "@mui/material/ListItemAvatar";
 import { getTasks } from "@/api/tasks";
 import PendingIcon from "@mui/icons-material/Pending";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import Typography from "@mui/material/Typography";
 
 type TaskStatusIconMap = {
   [key: string]: JSX.Element;
@@ -47,6 +48,9 @@ export default async function TasksList() {
 
   return (
     <>
+      <Typography variant="h4" component="h1" gutterBottom>
+        Tasks
+      </Typography>
       <List>
         {tasks.map((task: Task) => (
           <>
