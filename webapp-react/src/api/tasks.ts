@@ -1,9 +1,13 @@
 import { getAccessToken } from "@auth0/nextjs-auth0";
 
+function buildUrl(path: string) {
+  return `${process.env.BACKEND_BASE_URL}${path}`;
+}
+
 export async function getTasks() {
   const accessTokenResponse = await getAccessToken({});
 
-  const res = await fetch("http://backend:8080/v0/tasks", {
+  const res = await fetch(buildUrl("/v0/tasks"), {
     cache: "no-store",
     headers: {
       Authorization: "Bearer " + accessTokenResponse.accessToken || "",
@@ -22,7 +26,7 @@ export async function getTasks() {
 }
 
 export async function addTask() {
-  const res = await fetch("http://backend:8080/v0/tasks", {
+  const res = await fetch(buildUrl("/v0/tasks"), {
     method: "POST",
     body: JSON.stringify({
       title: "New task",
