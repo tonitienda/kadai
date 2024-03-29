@@ -87,10 +87,7 @@ export default function TasksList() {
               <ListItemAvatar>
                 <TaskStatus status={task.status} />
               </ListItemAvatar>
-              <ListItemText
-                primary={task.title}
-                secondary={task.description + task.id}
-              />
+              <ListItemText primary={task.title} secondary={task.description} />
             </ListItem>
             <Divider variant="inset" component="li" />
           </>
