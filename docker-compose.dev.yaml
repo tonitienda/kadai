@@ -4,5 +4,5 @@ services:
     build:
       target: build
     volumes:
-      - ./webapp-react:/app
+      - ./webapp-nextjs:/app
     command: npm run dev
