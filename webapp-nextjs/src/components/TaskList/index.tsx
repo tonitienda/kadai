@@ -7,11 +7,12 @@ import Divider from "@mui/material/Divider";
 import Input from "@mui/material/Input";
 import ListItemText from "@mui/material/ListItemText";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
-import { getTasks, addTask } from "@/api/tasks";
+import { getTasks, addTask, deleteTask } from "@/api/tasks";
 import PendingIcon from "@mui/icons-material/Pending";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import DeleteIcon from "@mui/icons-material/Delete";
 import Typography from "@mui/material/Typography";
-import { FormGroup } from "@mui/material";
+import { FormGroup, IconButton } from "@mui/material";
 import { Button } from "@mui/base";
 
 type TaskStatusIconMap = {
@@ -34,7 +35,7 @@ function TaskStatus(props: { status: string }): JSX.Element {
 }
 
 type Task = {
-  ID: string;
+  id: string;
   title: string;
   description: string;
   status: string;
@@ -67,11 +68,29 @@ export default function TasksList() {
       <List>
         {tasks.map((task: Task) => (
           <>
-            <ListItem alignItems="flex-start" key={task.ID}>
+            <ListItem
+              alignItems="flex-start"
+              key={task.id}
+              secondaryAction={
+                <IconButton
+                  edge="end"
+                  aria-label="delete-task"
+                  onClick={async () => {
+                    // FIXME: handle potential error
+                    await deleteTask(task.id).then(refreshTasks);
+                  }}
+                >
+                  <DeleteIcon />
+                </IconButton>
+              }
+            >
               <ListItemAvatar>
                 <TaskStatus status={task.status} />
               </ListItemAvatar>
-              <ListItemText primary={task.title} secondary={task.description} />
+              <ListItemText
+                primary={task.title}
+                secondary={task.description + task.id}
+              />
             </ListItem>
             <Divider variant="inset" component="li" />
           </>

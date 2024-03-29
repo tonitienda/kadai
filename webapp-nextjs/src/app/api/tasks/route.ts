@@ -1,18 +1,4 @@
-import { getAccessToken } from "@auth0/nextjs-auth0";
-
-function buildUrl(path: string) {
-  return `${process.env.BACKEND_BASE_URL}${path}`;
-}
-
-async function getAuthHeader() {
-  const accessTokenResponse = await getAccessToken({
-    authorizationParams: {
-      audience: process.env.AUTH0_AUDIENCE || "",
-    },
-  });
-
-  return "Bearer " + accessTokenResponse.accessToken || "";
-}
+import { buildUrl, getAuthHeader } from "../tools";
 
 export const GET = async function getTasks() {
   const res = await fetch(buildUrl("/v0/tasks"), {

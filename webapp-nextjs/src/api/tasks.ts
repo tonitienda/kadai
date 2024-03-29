@@ -28,3 +28,19 @@ export async function addTask(title: string, description: string) {
 
   return res.json();
 }
+
+export async function deleteTask(taskID: string) {
+  const res = await fetch(`/api/tasks/` + taskID, {
+    method: "DELETE",
+  });
+  // The return value is *not* serialized
+  // You can return Date, Map, Set, etc.
+
+  if (!res.ok) {
+    // This will activate the closest `error.js` Error Boundary
+    alert(res.status);
+    throw new Error("Failed to delete task");
+  }
+
+  return res.json();
+}
