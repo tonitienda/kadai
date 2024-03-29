@@ -1,8 +1,7 @@
-import { NextApiRequest } from "next";
 import { buildUrl, getAuthHeader } from "../../tools";
 
 export const DELETE = async function deleteTask(
-  req: NextApiRequest,
+  req: Request,
   route: { params: { id: string } }
 ) {
   const taskId = route.params.id;
