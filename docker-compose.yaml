@@ -10,7 +10,7 @@ services:
       - .env
   webapp:
     build:
-      context: ./webapp-react
+      context: ./webapp-nextjs
       dockerfile: Dockerfile
     ports:
       - 3000:3000
