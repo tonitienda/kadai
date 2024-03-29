@@ -16,7 +16,7 @@ test-coverage:
     cd backend-golang-rest && go tool cover -html=coverage.out -o coverage.html
 
 start-frontend:
-    cp .env webapp-react/.env.local
-    cd webapp-react && BACKEND_BASE_URL="http://localhost:8080" npm run dev
+    cp .env webapp-nextjs/.env.local
+    cd webapp-nextjs && BACKEND_BASE_URL="http://localhost:8080" npm run dev
 
 

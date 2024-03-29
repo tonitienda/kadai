@@ -5,7 +5,11 @@ function buildUrl(path: string) {
 }
 
 export async function getTasks() {
-  const accessTokenResponse = await getAccessToken({});
+  const accessTokenResponse = await getAccessToken({
+    authorizationParams: {
+      audience: process.env.AUTH0_AUDIENCE || "",
+    },
+  });
 
   const res = await fetch(buildUrl("/v0/tasks"), {
     cache: "no-store",
