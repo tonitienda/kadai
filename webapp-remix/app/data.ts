@@ -6,6 +6,7 @@ import { matchSorter } from "match-sorter";
 // @ts-expect-error - no types, but it's a tiny function
 import sortBy from "sort-by";
 import invariant from "tiny-invariant";
+import { getSession } from "./services/session.server";
 
 type ContactMutation = {
   id?: string;
@@ -28,7 +29,9 @@ export type ContactRecord = ContactMutation & {
 const fakeContacts = {
   records: {} as Record<string, ContactRecord>,
 
-  async getAll(): Promise<ContactRecord[]> {
+  async getAll(request: any): Promise<ContactRecord[]> {
+    const session = await getSession(request.headers.get("Cookie"));
+
     return Object.keys(fakeContacts.records)
       .map((key) => fakeContacts.records[key])
       .sort(sortBy("-createdAt", "last"));
@@ -62,9 +65,9 @@ const fakeContacts = {
 
 ////////////////////////////////////////////////////////////////////////////////
 // Handful of helper functions to be called from route loaders and actions
-export async function getContacts(query?: string | null) {
+export async function getContacts(request: any, query?: string | null) {
   await new Promise((resolve) => setTimeout(resolve, 500));
-  let contacts = await fakeContacts.getAll();
+  let contacts = await fakeContacts.getAll(request);
   if (query) {
     contacts = matchSorter(contacts, query, {
       keys: ["first", "last"],
