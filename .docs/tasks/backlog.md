@@ -11,3 +11,5 @@
 - [ ] Add MVP C# Rest-Backend
 - [ ] [Optional] Add MVP Clojure Rest-Backend
 - [ ] [Optional] Add MVP Kotlin Rest-Backend
+- [ ] Add MVP Remix WebApp
+- [ ] Add MVP HTMX WebApp
