@@ -1,24 +1,5 @@
-import { getAccessToken } from "@auth0/nextjs-auth0";
-
-function buildUrl(path: string) {
-  return `${process.env.BACKEND_BASE_URL}${path}`;
-}
-
 export async function getTasks() {
-  const accessTokenResponse = await getAccessToken({
-    authorizationParams: {
-      audience: process.env.AUTH0_AUDIENCE || "",
-    },
-  });
-
-  const res = await fetch(buildUrl("/v0/tasks"), {
-    cache: "no-store",
-    headers: {
-      Authorization: "Bearer " + accessTokenResponse.accessToken || "",
-    },
-  });
-  // The return value is *not* serialized
-  // You can return Date, Map, Set, etc.
+  const res = await fetch("/api/tasks");
 
   if (!res.ok) {
     // This will activate the closest `error.js` Error Boundary
@@ -29,18 +10,13 @@ export async function getTasks() {
   return res.json();
 }
 
-export async function addTask() {
-  const res = await fetch(buildUrl("/v0/tasks"), {
+export async function addTask(title: string, description: string) {
+  const res = await fetch("/api/tasks", {
     method: "POST",
     body: JSON.stringify({
-      title: "New task",
-      description: "This is a new task",
+      title,
+      description,
     }),
-
-    headers: {
-      "X-User-ID": "b78fe6be-0642-4cfa-9f19-9cc8e53b129d",
-      "Content-Type": "application/json",
-    },
   });
   // The return value is *not* serialized
   // You can return Date, Map, Set, etc.
