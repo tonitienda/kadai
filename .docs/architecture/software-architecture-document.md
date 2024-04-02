@@ -212,3 +212,47 @@ classDef external fill:#999999
 class AuthMw,JsonApi,HTMXApi,Core,DataAccess,DataBase system
 class ReactWebApp,HtmxWebApp,MobileApp,Auth0 external
 ```
+
+## 2.2 Scenarios
+
+### 2.2.1 Adding and Deleting a Task
+
+#### Description
+
+- The user adds a new task to the system specifying a title and a description via the GUI.
+- The GUI sends a POST request to the backend with the specified data.
+  - If the request is successful, the backend responds with a 201 - Created status code.
+- The user deletes a task via the GUI.
+- The GUI sends a DELETE request to the backend with the task id without asking for confirmation.
+  - If the request is successful, the backend responds with a 202 - Accepted status code and a JSON object with the action that can be executed to undo the deletion.
+  - The GUI offers the option to undo the deletion.
+- The user decides to undo the deletion via the GUI.
+- The GUI executes the action provided by the server that will undo the deletion.
+
+
+Ommited the permissions checks for brevity. Users can only undo the actions they executed.
+
+#### View
+
+```mermaid
+sequenceDiagram
+
+Actor User
+Participant GUI
+Participant Backend
+
+User ->> GUI: add_task(title, description)
+GUI ->> Backend: POST /tasks {title, description}
+Backend ->> GUI: 201 Created
+
+User ->> GUI: delete_task(task_id)
+GUI ->> Backend: DELETE /tasks/task_id
+Backend ->> GUI: 202 Accepted { _actions: { undo: action }}
+
+alt User wants to undo the deletion
+    User ->> GUI: execute(action)
+    GUI ->> Backend: POST /actions {action}
+    Backend ->> GUI: 202 Accepted
+end
+
+```
