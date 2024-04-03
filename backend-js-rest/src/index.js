@@ -2,12 +2,17 @@ const express = require("express");
 const tasks = require("./tasks");
 
 const app = express();
-const router = express.Router();
 const v0 = express.Router();
+app.use(express.json());
 
+app.use((req, res, next) => {
+  console.log(`[${req.method}] ${req.url}`);
+  next();
+});
+
+app.use("/v0", v0);
 v0.use("/tasks", tasks);
-router.use("/v0", v0);
 
-app.listen(8081, () => {
-  console.log("Server running on port 8081");
+app.listen(8080, () => {
+  console.log("Server running on port 8080");
 });
