@@ -1,11 +1,37 @@
 start-go:
-    COMPOSE_PROJECT_NAME="kadai-nextjs-go" docker-compose -f docker-compose.yaml -f compose.next-frontend.yaml -f compose.go-backend.yaml up --build
+    COMPOSE_PROJECT_NAME="kadai-nextjs-go" docker compose \
+        -f docker-compose.yaml \
+        -f compose.next-frontend.yaml \
+        -f compose.go-backend.yaml \
+        -f compose.expose-ports.yaml \
+        up --build
 
 start-js:
-    COMPOSE_PROJECT_NAME="kadai-nextjs-js" docker-compose -f docker-compose.yaml -f compose.next-frontend.yaml -f compose.js-backend.yaml up --build
+    COMPOSE_PROJECT_NAME="kadai-nextjs-js" docker compose \
+        -f docker-compose.yaml \
+        -f compose.next-frontend.yaml \
+        -f compose.js-backend.yaml \
+        -f compose.expose-ports.yaml \
+        up --build
+
+test-cypress-next-js:
+    COMPOSE_PROJECT_NAME="kadai-e2e-nextjs-js" docker compose \
+        -f docker-compose.yaml \
+        -f compose.next-frontend.yaml \
+        -f compose.js-backend.yaml \
+        -f compose.e2e-cypress.yaml \
+        up --build --exit-code-from e2e
+
+test-cypress-next-go:
+    COMPOSE_PROJECT_NAME="kadai-e2e-nextjs-go" docker compose \
+        -f docker-compose.yaml \
+        -f compose.next-frontend.yaml \
+        -f compose.go-backend.yaml \
+        -f compose.e2e-cypress.yaml \
+        up --build --exit-code-from e2e
 
 dev:
-    docker-compose -f docker-compose.yaml -f docker-compose.dev.yaml up
+    docker compose -f docker-compose.yaml -f docker-compose.dev.yaml up
 
 
 start-backend:
