@@ -42,5 +42,5 @@ export async function deleteTask(taskID: string) {
     throw new Error("Failed to delete task");
   }
 
-  return res.json();
+  return;
 }

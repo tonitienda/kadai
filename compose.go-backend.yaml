@@ -1,0 +1,6 @@
+version: '3.7'
+name: kadai-go
+services:
+  backend:
+    build:
+      context: ./backend-golang-rest
