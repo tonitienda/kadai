@@ -1,0 +1,10 @@
+version: '3.7'
+services:
+  e2e:
+    build:
+      dockerfile: Dockerfile
+      context: e2e-cypress
+    depends_on:
+      - webapp
+    environment:
+      - KADAI_FRONTEND_URL=http://webapp:3000
