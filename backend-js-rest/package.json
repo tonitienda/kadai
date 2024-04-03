@@ -1,0 +1,16 @@
+{
+  "name": "backend-js-rest",
+  "version": "1.0.0",
+  "description": "Backend for the Kadai application",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "test",
+    "start": "node src/index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.2",
+    "uuid": "^9.0.1"
+  }
+}

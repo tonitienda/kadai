@@ -1,5 +1,8 @@
-start:
-    docker-compose up
+start-go:
+    COMPOSE_PROJECT_NAME="kadai-nextjs-go" docker-compose -f docker-compose.yaml -f compose.next-frontend.yaml -f compose.go-backend.yaml up --build
+
+start-js:
+    COMPOSE_PROJECT_NAME="kadai-nextjs-js" docker-compose -f docker-compose.yaml -f compose.next-frontend.yaml -f compose.js-backend.yaml up --build
 
 dev:
     docker-compose -f docker-compose.yaml -f docker-compose.dev.yaml up

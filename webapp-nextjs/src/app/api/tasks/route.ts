@@ -29,6 +29,7 @@ export const POST = async function addTask(req: Request) {
 
     headers: {
       Authorization: await getAuthHeader(),
+      "Content-Type": "application/json",
     },
   });
 
