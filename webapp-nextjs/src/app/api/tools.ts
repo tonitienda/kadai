@@ -5,11 +5,15 @@ export function buildUrl(path: string) {
 }
 
 export async function getAuthHeader() {
-  const accessTokenResponse = await getAccessToken({
-    authorizationParams: {
-      audience: process.env.AUTH0_AUDIENCE || "",
-    },
-  });
+  try {
+    const accessTokenResponse = await getAccessToken({
+      authorizationParams: {
+        audience: process.env.AUTH0_AUDIENCE || "",
+      },
+    });
 
-  return "Bearer " + accessTokenResponse.accessToken || "";
+    return "Bearer " + accessTokenResponse.accessToken || "";
+  } catch (error) {
+    return "";
+  }
 }
