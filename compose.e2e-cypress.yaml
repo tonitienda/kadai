@@ -8,6 +8,7 @@ services:
       - webapp
     volumes:
       - ./e2e-cypress/cypress/screenshots:/app/cypress/screenshots
+      - .env:/app/.env
 
   webapp:
     environment:

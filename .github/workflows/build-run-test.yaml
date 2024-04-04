@@ -35,3 +35,8 @@ jobs:
       - run: echo "${{ secrets.DOT_ENV }}" > .env
       - name: Run E2E tests
         run: just test-${{ matrix.e2e_runner }}-${{ matrix.frontend }}-${{ matrix.backend }}
+      - name: Upload test screenshots
+        uses: actions/upload-artifact@v2
+        with:
+          name: e2e-screenshots-${{ matrix.e2e_runner }}-${{ matrix.frontend }}-${{ matrix.backend }}
+          path: cypress/screenshots
