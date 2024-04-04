@@ -12,7 +12,7 @@ module.exports = defineConfig({
   env: {
     FRONTEND_BASE_URL: process.env.FRONTEND_BASE_URL,
     AUTH0_ISSUER_BASE_URL: process.env.AUTH0_ISSUER_BASE_URL,
-    AUTH0_USERNAME: process.env.AUTH0_USERNAME,
-    AUTH0_PASSWORD: process.env.AUTH0_PASSWORD,
+    ALICE_USERNAME: process.env.ALICE_USERNAME,
+    ALICE_PASSWORD: process.env.ALICE_PASSWORD,
   },
 });
