@@ -1,10 +1,16 @@
 import { buildUrl, getAuthHeader } from "../tools";
 
 export const GET = async function getTasks() {
+  const authHeader = await getAuthHeader();
+
+  if (!authHeader) {
+    return Response.json([]);
+  }
+
   const res = await fetch(buildUrl("/v0/tasks"), {
     cache: "no-store",
     headers: {
-      Authorization: await getAuthHeader(),
+      Authorization: authHeader,
     },
   });
 

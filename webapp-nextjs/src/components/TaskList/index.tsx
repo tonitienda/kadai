@@ -65,10 +65,11 @@ export default function TasksList() {
       <Typography variant="h4" component="h1" gutterBottom>
         Tasks
       </Typography>
-      <List>
+      <List id="task-list">
         {tasks.map((task: Task) => (
           <>
             <ListItem
+              id={`task-${task.id}`}
               alignItems="flex-start"
               key={task.id}
               secondaryAction={
@@ -109,12 +110,14 @@ export default function TasksList() {
       {addingTask && (
         <FormGroup>
           <Input
+            id="task-title"
             placeholder="Title"
             onChange={(e) =>
               setNewTask((t) => ({ ...t, title: e.target.value }))
             }
           />
           <Input
+            id="task-description"
             placeholder="Description"
             onChange={(e) =>
               setNewTask((t) => ({ ...t, description: e.target.value }))
