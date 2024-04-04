@@ -14,23 +14,32 @@ const addTasks = (cy, numTasks) => {
 };
 
 const deleteAllTasks = (cy) => {
-  cy.get("ul#task-list")
-    .find('li[id^="task-"]')
-    .each((task) => {
+  cy.get("ul#task-list").then((taskList) => {
+    if (taskList.find('li[id^="task-"]').length === 0) {
+      return;
+    }
+
+    taskList.find('li[id^="task-"]').each((task) => {
       task.find("button").click();
     });
+  });
 };
 
 describe("Managing tasks", () => {
-  it("should login", () => {
+  it("should add and delete tasks", () => {
+    cy.log("should log in");
+
     cy.visit(Cypress.env("FRONTEND_BASE_URL") || "http://localhost:3000");
 
+    cy.log("Logging in");
     cy.get("div").contains("Login").click();
 
+    cy.log("Authenticating as Alice");
     cy.origin(Cypress.env("AUTH0_ISSUER_BASE_URL"), () => {
-      cy.get("input#1-email").type(Cypress.env("AUTH0_USERNAME"));
-      cy.get("input#1-password").type(Cypress.env("AUTH0_PASSWORD"));
+      cy.get("input#1-email").type(Cypress.env("ALICE_USERNAME"));
+      cy.get("input#1-password").type(Cypress.env("ALICE_PASSWORD"));
 
+      cy.log("Submitting login form");
       cy.get("button#1-submit").click();
     });
 

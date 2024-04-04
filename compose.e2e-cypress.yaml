@@ -6,5 +6,10 @@ services:
       context: e2e-cypress
     depends_on:
       - webapp
+    volumes:
+      - ./e2e-cypress/cypress/screenshots:/app/cypress/screenshots
+
+  webapp:
     environment:
-      - KADAI_FRONTEND_URL=http://webapp:3000
+      - AUTH0_BASE_URL=http://webapp:3000
+
