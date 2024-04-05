@@ -30,6 +30,15 @@ test-cypress-next-go:
         -f compose.e2e-cypress.yaml \
         up --build --exit-code-from e2e
 
+
+test-cypress-htmx-go:
+    COMPOSE_PROJECT_NAME="kadai-e2e-nextjs-go" docker compose \
+        -f docker-compose.yaml \
+        -f compose.golang-htmx-frontend.yaml \
+        -f compose.go-backend.yaml \
+        -f compose.e2e-cypress.yaml \
+        up --build --exit-code-from e2e
+
 dev:
     docker compose -f docker-compose.yaml -f docker-compose.dev.yaml up
 
