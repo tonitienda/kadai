@@ -14,6 +14,14 @@ start-js:
         -f compose.expose-ports.yaml \
         up --build
 
+start-go-htmx:
+    COMPOSE_PROJECT_NAME="kadai-nextjs-go" docker compose \
+        -f docker-compose.yaml \
+        -f compose.golang-htmx-frontend.yaml \
+        -f compose.go-backend.yaml \
+        -f compose.expose-ports.yaml \
+        up --build
+
 test-cypress-next-js:
     COMPOSE_PROJECT_NAME="kadai-e2e-nextjs-js" docker compose \
         -f docker-compose.yaml \

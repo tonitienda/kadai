@@ -3,3 +3,5 @@ services:
   webapp:
     build:
       context: ./webapp-golang-htmx
+    env_file:
+      - .env
