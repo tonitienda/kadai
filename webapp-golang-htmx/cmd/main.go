@@ -9,6 +9,7 @@ import (
 	"net/http"
 
 	authenticator "github.com/tonitienda/kadai/webapp-golang-htmx/pkg/auth"
+	"github.com/tonitienda/kadai/webapp-golang-htmx/pkg/tasks"
 )
 
 var templates = template.Must(template.ParseGlob("templates/*.html"))
@@ -38,7 +39,21 @@ func main() {
 	}
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		templates.ExecuteTemplate(w, "index.html", nil)
+		t := []tasks.Task{}
+
+		cookie, _ := r.Cookie("access_token")
+		if cookie != nil {
+			t, err = tasks.GetTasks(cookie.Value)
+
+			if err != nil {
+				http.Error(w, "Failed to get tasks", http.StatusInternalServerError)
+				return
+			}
+		}
+
+		templates.ExecuteTemplate(w, "index.html", struct{ Tasks []tasks.Task }{
+			Tasks: t,
+		})
 	})
 
 	http.HandleFunc("/login", func(w http.ResponseWriter, r *http.Request) {
