@@ -26,6 +26,27 @@ const deleteAllTasks = (cy) => {
 };
 
 describe("Managing tasks", () => {
+  it("should get task list", () => {
+    cy.log("should log in");
+
+    cy.visit(Cypress.env("FRONTEND_BASE_URL") || "http://localhost:3000");
+
+    cy.log("Logging in");
+    cy.get("div").contains("Login").click();
+
+    cy.log("Authenticating as Alice");
+    cy.origin(Cypress.env("AUTH0_ISSUER_BASE_URL"), () => {
+      cy.get("input#1-email").type(Cypress.env("ALICE_USERNAME"));
+      cy.get("input#1-password").type(Cypress.env("ALICE_PASSWORD"));
+
+      cy.log("Submitting login form");
+      cy.get("button#1-submit").click();
+    });
+
+    cy.get("h3").contains("Tasks").should("exist");
+    cy.get("ul#task-list").should("exist");
+  });
+
   it("should add and delete tasks", () => {
     cy.log("should log in");
 

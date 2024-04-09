@@ -1,6 +1,7 @@
 package tasks
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -8,7 +9,7 @@ import (
 )
 
 type Task struct {
-	ID          int    `json:"id"`
+	ID          string `json:"id"`
 	Title       string `json:"title"`
 	Description string `json:"description"`
 	Status      string `json:"status"`
@@ -58,5 +59,67 @@ func GetTasks(token string) ([]Task, error) {
 	}
 
 	return tasks, nil
+
+}
+
+func AddTask(token string, title string, description string) error {
+	req, err := http.NewRequest(http.MethodPost, "http://backend:8080/v0/tasks", bytes.NewReader([]byte(
+		fmt.Sprintf(`{"title": "%s", "description": "%s"}`, title, description),
+	)))
+
+	if err != nil {
+		fmt.Printf("client: could not create request: %s\n", err)
+		// TODO - See this
+		return err
+	}
+
+	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", token))
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		fmt.Printf("client: error making http request: %s\n", err)
+		// TODO - See this
+		return err
+	}
+
+	fmt.Printf("client: got response!\n")
+	fmt.Printf("client: status code: %d\n", res.StatusCode)
+
+	if res.StatusCode != http.StatusOK {
+		fmt.Printf("client: got non-200 status code: %d\n", res.StatusCode)
+		// TODO - See this
+		return fmt.Errorf("non-200 status code: %d", res.StatusCode)
+	}
+
+	return nil
+
+}
+
+func DeleteTask(token string, taskID string) error {
+	req, err := http.NewRequest(http.MethodDelete, "http://backend:8080/v0/tasks/"+taskID, nil)
+
+	if err != nil {
+		fmt.Printf("client: could not create request: %s\n", err)
+		// TODO - See this
+		return err
+	}
+
+	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", token))
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		fmt.Printf("client: error making http request: %s\n", err)
+		// TODO - See this
+		return err
+	}
+
+	fmt.Printf("client: got response!\n")
+	fmt.Printf("client: status code: %d\n", res.StatusCode)
+
+	if res.StatusCode != http.StatusOK {
+		fmt.Printf("client: got non-200 status code: %d\n", res.StatusCode)
+		// TODO - See this
+		return fmt.Errorf("non-200 status code: %d", res.StatusCode)
+	}
+
+	return nil
 
 }

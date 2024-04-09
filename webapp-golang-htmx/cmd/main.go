@@ -7,9 +7,12 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
+	"os"
+	"strings"
 
 	authenticator "github.com/tonitienda/kadai/webapp-golang-htmx/pkg/auth"
 	"github.com/tonitienda/kadai/webapp-golang-htmx/pkg/tasks"
+	"golang.org/x/oauth2"
 )
 
 var templates = template.Must(template.ParseGlob("templates/*.html"))
@@ -46,6 +49,7 @@ func main() {
 			t, err = tasks.GetTasks(cookie.Value)
 
 			if err != nil {
+				fmt.Println("Failed to add task: ", err)
 				http.Error(w, "Failed to get tasks", http.StatusInternalServerError)
 				return
 			}
@@ -67,12 +71,90 @@ func main() {
 
 		http.SetCookie(w, newCookie("auth_state", state))
 
-		http.Redirect(w, r, auth.AuthCodeURL(state), http.StatusTemporaryRedirect)
+		authUrl := auth.AuthCodeURL(state, oauth2.SetAuthURLParam("audience", os.Getenv("AUTH0_AUDIENCE")))
+		fmt.Println("Redirecting to: ", authUrl)
+
+		http.Redirect(w, r, authUrl, http.StatusTemporaryRedirect)
 
 	})
 
-	http.HandleFunc("/callback", func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("POST /tasks", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println("POST /tasks")
+		// Parse the form data
+		err := r.ParseForm()
+		if err != nil {
+			http.Error(w, "Failed to parse form data", http.StatusBadRequest)
+			return
+		}
 
+		t := []tasks.Task{}
+
+		// Retrieve the title and description from the form
+		title := r.FormValue("title")
+		description := r.FormValue("description")
+
+		cookie, _ := r.Cookie("access_token")
+		if cookie != nil {
+			err := tasks.AddTask(cookie.Value, title, description)
+
+			if err != nil {
+				fmt.Println("Failed to add task: ", err)
+				http.Error(w, "Failed to add task", http.StatusInternalServerError)
+				return
+			}
+
+			t, err = tasks.GetTasks(cookie.Value)
+
+			if err != nil {
+				fmt.Println("Failed to get tasks: ", err)
+				http.Error(w, "Failed to get tasks", http.StatusInternalServerError)
+				return
+			}
+
+			fmt.Println("Tasks: ", t)
+		}
+
+		templates.ExecuteTemplate(w, "task-list.html", struct{ Tasks []tasks.Task }{
+			Tasks: t,
+		})
+	})
+
+	http.HandleFunc("DELETE /tasks", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println("DELETE /tasks")
+
+		path := strings.TrimPrefix(r.URL.Path, "/tasks/")
+		id := strings.TrimSuffix(path, "/")
+		fmt.Fprintf(w, "Deleting task with ID: %s", id)
+
+		t := []tasks.Task{}
+
+		cookie, _ := r.Cookie("access_token")
+		if cookie != nil {
+			err := tasks.DeleteTask(cookie.Value, id)
+
+			if err != nil {
+				fmt.Println("Failed to delete task: ", err)
+				http.Error(w, "Failed to delete task", http.StatusInternalServerError)
+				return
+			}
+
+			t, err = tasks.GetTasks(cookie.Value)
+
+			if err != nil {
+				fmt.Println("Failed to get tasks: ", err)
+				http.Error(w, "Failed to get tasks", http.StatusInternalServerError)
+				return
+			}
+
+			fmt.Println("Tasks: ", t)
+		}
+
+		templates.ExecuteTemplate(w, "task-list.html", struct{ Tasks []tasks.Task }{
+			Tasks: t,
+		})
+	})
+
+	http.HandleFunc("/callback", func(w http.ResponseWriter, r *http.Request) {
 		storedState, err := r.Cookie("auth_state")
 		if err != nil {
 			// Handle cookie not found error
@@ -91,10 +173,11 @@ func main() {
 		// TODO - See what to do here, when the code is not passed to the callback
 		if code == "" {
 			http.Error(w, "Code not found in request.", http.StatusBadRequest)
+			return
 		}
 
 		// Exchange an authorization code for a token.
-		token, err := auth.Exchange(ctx, code)
+		token, err := auth.Exchange(ctx, code, oauth2.SetAuthURLParam("audience", os.Getenv("AUTH0_AUDIENCE")))
 		if err != nil {
 
 			w.WriteHeader(http.StatusUnauthorized)
@@ -127,21 +210,6 @@ func main() {
 
 	})
 
-	http.HandleFunc("/task-list", func(w http.ResponseWriter, r *http.Request) {
-		token, err := r.Cookie("id_token")
-
-		if err != nil {
-			http.Error(w, "No token found", http.StatusUnauthorized)
-			return
-		}
-
-		// TODO - DELETE THIS!!
-		fmt.Println("Token: ", token.Value)
-
-		templates.ExecuteTemplate(w, "task-list.html", nil)
-
-	})
-
 	http.ListenAndServe(":3000", nil)
 }
 
@@ -152,7 +220,7 @@ func generateRandomState() (string, error) {
 		return "", err
 	}
 
-	state := base64.StdEncoding.EncodeToString(b)
+	state := base64.RawURLEncoding.EncodeToString(b)
 
 	return state, nil
 }

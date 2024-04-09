@@ -19,7 +19,7 @@ type Authenticator struct {
 func New() (*Authenticator, error) {
 	provider, err := oidc.NewProvider(
 		context.Background(),
-		"https://"+os.Getenv("AUTH0_DOMAIN")+"/",
+		os.Getenv("AUTH0_ISSUER_BASE_URL")+"/",
 	)
 	if err != nil {
 		return nil, err
@@ -30,7 +30,7 @@ func New() (*Authenticator, error) {
 		ClientSecret: os.Getenv("AUTH0_CLIENT_SECRET"),
 		RedirectURL:  os.Getenv("AUTH0_CALLBACK_URL"),
 		Endpoint:     provider.Endpoint(),
-		Scopes:       []string{oidc.ScopeOpenID, "profile"},
+		Scopes:       []string{oidc.ScopeOpenID, "profile", "email"},
 	}
 
 	return &Authenticator{
@@ -47,7 +47,7 @@ func (a *Authenticator) VerifyIDToken(ctx context.Context, token *oauth2.Token) 
 	}
 
 	oidcConfig := &oidc.Config{
-		ClientID: a.ClientID,
+		ClientID: os.Getenv("AUTH0_CLIENT_ID"),
 	}
 
 	return a.Verifier(oidcConfig).Verify(ctx, rawIDToken)
