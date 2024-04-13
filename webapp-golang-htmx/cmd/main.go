@@ -206,7 +206,7 @@ func main() {
 		http.SetCookie(w, newCookie("user_picture", profile["picture"].(string)))
 
 		fmt.Println("Callback executed, redirecting to /")
-		http.Redirect(w, r, "http://localhost:3000", http.StatusFound)
+		http.Redirect(w, r, "/", http.StatusFound)
 
 	})
 
