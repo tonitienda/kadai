@@ -1,0 +1,15 @@
+<ul id="task-list">
+  {{ range $task := .Tasks }}
+  <li id="task-{{$task.ID}}">
+    <div class="card" style="width: 18rem">
+      <div class="card-body">
+        <h5 class="card-title">{{$task.Title}}</h5>
+        <p class="card-text">{{$task.Description}}</p>
+      </div>
+    </div>
+    <div class="card-footer">
+      <button hx-delete="/tasks/{{$task.ID}}" hx-target="#tasks">Delete</button>
+    </div>
+  </li>
+  {{ end }}
+</ul>

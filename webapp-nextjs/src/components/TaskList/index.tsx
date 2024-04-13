@@ -62,7 +62,7 @@ export default function TasksList() {
 
   return (
     <>
-      <Typography variant="h4" component="h1" gutterBottom>
+      <Typography variant="h4" component="h3" gutterBottom>
         Tasks
       </Typography>
       <List id="task-list">

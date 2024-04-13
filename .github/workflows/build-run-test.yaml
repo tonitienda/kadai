@@ -12,19 +12,27 @@ jobs:
   # In build job and once for each backend when testing e2e
   build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service:
+          [
+            backend-golang-rest,
+            backend-js-rest,
+            webapp-golang-htmx,
+            webapp-nextjs,
+            e2e-cypress,
+          ]
     steps:
       - uses: actions/checkout@v4
-      - name: Build Golang Rest Backend Docker image
-        run: docker build -t backend-golang-rest backend-golang-rest
-      - name: Build React WebApp Docker image
-        run: docker build -t webapp-nextjs webapp-nextjs
+      - name: Build Docker image
+        run: docker build -t ${{ matrix.service }} ${{ matrix.service }}
   e2e:
     runs-on: ubuntu-latest
     needs: build
     strategy:
       matrix:
         e2e_runner: [cypress]
-        frontend: [next]
+        frontend: [next, golang-htmx]
         backend: [go, js]
     steps:
       - uses: actions/checkout@v4

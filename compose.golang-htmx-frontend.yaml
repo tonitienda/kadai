@@ -1,0 +1,9 @@
+version: '3.7'
+services:
+  webapp:
+    build:
+      context: ./webapp-golang-htmx
+    env_file:
+      - .env
+    environment:
+      - AUTH0_CALLBACK_URL=http://webapp:3000/callback
