@@ -34,6 +34,7 @@ jobs:
         e2e_runner: [cypress]
         frontend: [next, golang-htmx]
         backend: [go, js]
+        db: [inmemory] # TODO: add mongo
     steps:
       - uses: actions/checkout@v4
       - uses: extractions/setup-just@v2
@@ -42,7 +43,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: echo "${{ secrets.DOT_ENV }}" > .env
       - name: Run E2E tests
-        run: just test-${{ matrix.e2e_runner }}-${{ matrix.frontend }}-${{ matrix.backend }}
+        run: just test-${{ matrix.e2e_runner }}-${{ matrix.frontend }}-${{ matrix.backend }}-${{ matrix.db }}
       - name: Upload test screenshots
         uses: actions/upload-artifact@v2
         with:
