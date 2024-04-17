@@ -34,7 +34,7 @@ jobs:
         e2e_runner: [cypress]
         frontend: [next, golang-htmx]
         backend: [go, js]
-        db: [inmemory] # TODO: add mongo
+        db: [mongo, inmemory]
     steps:
       - uses: actions/checkout@v4
       - uses: extractions/setup-just@v2
