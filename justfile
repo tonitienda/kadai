@@ -83,7 +83,7 @@ test-cypress-golang-htmx-go-inmemory:
 start-golang-htmx-go-inmemory:
      COMPOSE_PROJECT_NAME="kadai-cypress-golang-htmx-go-inmemory" docker compose \
         -f docker-compose.yaml \
-        -f compose.golang-html-frontend.yaml \
+        -f compose.golang-htmx-frontend.yaml \
         -f compose.go-backend.yaml \
         -f compose.db-inmemory.yaml \
         -f compose.expose-ports.yaml \
@@ -119,7 +119,7 @@ test-cypress-golang-htmx-js-inmemory:
 start-golang-htmx-js-inmemory:
      COMPOSE_PROJECT_NAME="kadai-cypress-golang-htmx-js-inmemory" docker compose \
         -f docker-compose.yaml \
-        -f compose.golang-html-frontend.yaml \
+        -f compose.golang-htmx-frontend.yaml \
         -f compose.js-backend.yaml \
         -f compose.db-inmemory.yaml \
         -f compose.expose-ports.yaml \
