@@ -3,6 +3,7 @@ start-go:
         -f docker-compose.yaml \
         -f compose.next-frontend.yaml \
         -f compose.go-backend.yaml \
+        -f compose.db-inmemory.yaml \
         -f compose.expose-ports.yaml \
         up --build
 
@@ -11,6 +12,7 @@ start-js:
         -f docker-compose.yaml \
         -f compose.next-frontend.yaml \
         -f compose.js-backend.yaml \
+        -f compose.db-inmemory.yaml \
         -f compose.expose-ports.yaml \
         up --build
 
