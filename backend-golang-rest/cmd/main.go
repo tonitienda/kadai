@@ -1,11 +1,14 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
+	"os"
 
 	"github.com/gin-gonic/gin"
 	"github.com/tonitienda/kadai/backend-golang-rest/pkg/authentication"
 	"github.com/tonitienda/kadai/backend-golang-rest/pkg/common"
+	"github.com/tonitienda/kadai/backend-golang-rest/pkg/db"
 	"github.com/tonitienda/kadai/backend-golang-rest/pkg/tasks"
 )
 
@@ -55,9 +58,28 @@ func DummyAuthMiddleware(c *gin.Context) {
 
 func setupRouter() *gin.Engine {
 
-	tasksHandler := tasks.NewTasksHandler(
-		tasks.NewInMemoryTasksDB(),
-	)
+	dbType := os.Getenv("DB_TYPE")
+
+	var tasksHandler *tasks.TasksHandler
+
+	// This needs to be improved specially if we add more databases
+	// But for now we are testing that tests work with both mongodb and in memory db.
+	if dbType == "MONGO" {
+		fmt.Println("Initializing with MONGO")
+		mongodb := db.MongoDB{}
+		mongodb.Connect()
+
+		tasksHandler = tasks.NewTasksHandler(
+			&mongodb,
+		)
+	} else {
+
+		fmt.Println("Initializing with IN_MEMORY")
+		tasksHandler = tasks.NewTasksHandler(
+			tasks.NewInMemoryTasksDB(),
+		)
+	}
+
 	authenticator := authentication.NewAuthenticator(authentication.NewInMemoryAuthDB())
 
 	r := gin.Default()
