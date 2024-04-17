@@ -71,73 +71,73 @@ start-next-js-mongo:
         -f compose.expose-ports.yaml \
         up --build
    
-test-cypress-golang-html-go-inmemory:
-  COMPOSE_PROJECT_NAME="kadai-cypress-golang-html-go-inmemory" docker compose \
+test-cypress-golang-htmx-go-inmemory:
+  COMPOSE_PROJECT_NAME="kadai-cypress-golang-htmx-go-inmemory" docker compose \
      -f docker-compose.yaml \
-     -f compose.golang-html-frontend.yaml \
+     -f compose.golang-htmx-frontend.yaml \
      -f compose.go-backend.yaml \
      -f compose.db-inmemory.yaml \
      -f compose.e2e-cypress.yaml \
      up --build --exit-code-from e2e
 
-start-golang-html-go-inmemory:
-     COMPOSE_PROJECT_NAME="kadai-cypress-golang-html-go-inmemory" docker compose \
+start-golang-htmx-go-inmemory:
+     COMPOSE_PROJECT_NAME="kadai-cypress-golang-htmx-go-inmemory" docker compose \
         -f docker-compose.yaml \
-        -f compose.golang-html-frontend.yaml \
+        -f compose.golang-htmx-frontend.yaml \
         -f compose.go-backend.yaml \
         -f compose.db-inmemory.yaml \
         -f compose.expose-ports.yaml \
         up --build
    
-test-cypress-golang-html-go-mongo:
-  COMPOSE_PROJECT_NAME="kadai-cypress-golang-html-go-mongo" docker compose \
+test-cypress-golang-htmx-go-mongo:
+  COMPOSE_PROJECT_NAME="kadai-cypress-golang-htmx-go-mongo" docker compose \
      -f docker-compose.yaml \
-     -f compose.golang-html-frontend.yaml \
+     -f compose.golang-htmx-frontend.yaml \
      -f compose.go-backend.yaml \
      -f compose.db-mongo.yaml \
      -f compose.e2e-cypress.yaml \
      up --build --exit-code-from e2e
 
-start-golang-html-go-mongo:
-     COMPOSE_PROJECT_NAME="kadai-cypress-golang-html-go-mongo" docker compose \
+start-golang-htmx-go-mongo:
+     COMPOSE_PROJECT_NAME="kadai-cypress-golang-htmx-go-mongo" docker compose \
         -f docker-compose.yaml \
-        -f compose.golang-html-frontend.yaml \
+        -f compose.golang-htmx-frontend.yaml \
         -f compose.go-backend.yaml \
         -f compose.db-mongo.yaml \
         -f compose.expose-ports.yaml \
         up --build
    
-test-cypress-golang-html-js-inmemory:
-  COMPOSE_PROJECT_NAME="kadai-cypress-golang-html-js-inmemory" docker compose \
+test-cypress-golang-htmx-js-inmemory:
+  COMPOSE_PROJECT_NAME="kadai-cypress-golang-htmx-js-inmemory" docker compose \
      -f docker-compose.yaml \
-     -f compose.golang-html-frontend.yaml \
+     -f compose.golang-htmx-frontend.yaml \
      -f compose.js-backend.yaml \
      -f compose.db-inmemory.yaml \
      -f compose.e2e-cypress.yaml \
      up --build --exit-code-from e2e
 
-start-golang-html-js-inmemory:
-     COMPOSE_PROJECT_NAME="kadai-cypress-golang-html-js-inmemory" docker compose \
+start-golang-htmx-js-inmemory:
+     COMPOSE_PROJECT_NAME="kadai-cypress-golang-htmx-js-inmemory" docker compose \
         -f docker-compose.yaml \
-        -f compose.golang-html-frontend.yaml \
+        -f compose.golang-htmx-frontend.yaml \
         -f compose.js-backend.yaml \
         -f compose.db-inmemory.yaml \
         -f compose.expose-ports.yaml \
         up --build
    
-test-cypress-golang-html-js-mongo:
-  COMPOSE_PROJECT_NAME="kadai-cypress-golang-html-js-mongo" docker compose \
+test-cypress-golang-htmx-js-mongo:
+  COMPOSE_PROJECT_NAME="kadai-cypress-golang-htmx-js-mongo" docker compose \
      -f docker-compose.yaml \
-     -f compose.golang-html-frontend.yaml \
+     -f compose.golang-htmx-frontend.yaml \
      -f compose.js-backend.yaml \
      -f compose.db-mongo.yaml \
      -f compose.e2e-cypress.yaml \
      up --build --exit-code-from e2e
 
-start-golang-html-js-mongo:
-     COMPOSE_PROJECT_NAME="kadai-cypress-golang-html-js-mongo" docker compose \
+start-golang-htmx-js-mongo:
+     COMPOSE_PROJECT_NAME="kadai-cypress-golang-htmx-js-mongo" docker compose \
         -f docker-compose.yaml \
-        -f compose.golang-html-frontend.yaml \
+        -f compose.golang-htmx-frontend.yaml \
         -f compose.js-backend.yaml \
         -f compose.db-mongo.yaml \
         -f compose.expose-ports.yaml \

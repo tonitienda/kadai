@@ -1,6 +1,6 @@
 const fs = require("node:fs");
 
-const frontEnds = ["next", "golang-html"];
+const frontEnds = ["next", "golang-htmx"];
 const backends = ["go", "js"];
 const testRunners = ["cypress"];
 const dbs = ["inmemory", "mongo"];
