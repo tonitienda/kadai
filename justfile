@@ -143,3 +143,12 @@ start-golang-htmx-js-mongo:
         -f compose.expose-ports.yaml \
         up --build
    
+test-all: 
+      just test-cypress-next-go-inmemory
+      just test-cypress-next-go-mongo
+      just test-cypress-next-js-inmemory
+      just test-cypress-next-js-mongo
+      just test-cypress-golang-htmx-go-inmemory
+      just test-cypress-golang-htmx-go-mongo
+      just test-cypress-golang-htmx-js-inmemory
+      just test-cypress-golang-htmx-js-mongo

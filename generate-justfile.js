@@ -40,9 +40,18 @@ const combinations = frontEnds.flatMap((f) =>
 
 console.log(combinations);
 
-const contents = combinations.reduce(
-  (contents, combination) => contents + makeJustTasks(combination),
-  ""
-);
+const contents =
+  combinations.reduce(
+    (contents, combination) => contents + makeJustTasks(combination),
+    ""
+  ) +
+  `
+test-all: ${combinations.reduce(
+    (contents, { runner, frontend, backend, db }) =>
+      contents +
+      `
+      just test-${runner}-${frontend}-${backend}-${db}`,
+    ""
+  )}`;
 
 fs.writeFileSync("justfile", contents);
