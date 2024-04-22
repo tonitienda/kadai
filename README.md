@@ -23,25 +23,27 @@ Here I am listing some of the technologies I am planning to use in this project 
 
 #### Backend
 
-- Golang
+- Golang ✔️
 - Java with Spring Boot
 - Kotlin
 - C#
-- Nodejs with Express
+- Nodejs with Express ✔️
 - Nodejs with Nestjs
 - Clojure
+- Python / FastAPI
+- Python / Django
 
 #### Frontend 
 
-- React with Nextjs
+- React with Nextjs ✔️
 - React with Remix
-- HTMX with Golang
+- HTMX with Golang ✔️
 - HTMX with Nodejs/Ejs
 
 #### APIs
 
 - Graphql
-- RESTful API
+- RESTful API ✔️
 - gRPC
 - Websockets
 - Server Sent Events
@@ -56,7 +58,7 @@ Here I am listing some of the technologies I am planning to use in this project 
 
 - Postgresql
 - Mysql
-- MongoDB
+- MongoDB 🚧
 
 
 #### Cache
@@ -65,22 +67,36 @@ Here I am listing some of the technologies I am planning to use in this project 
 - Memcached
 - Hazelcast
 
-#### DevOps
+#### Containers/Orchestration
 
-- Docker
+- Docker ✔️
 - Podman
-- Docker swarm
+- Docker Compose ✔️ / Swarm
 - Kubernetes
 - Kustomize
 - Telepresence
 - Helm
+
+### Infras as Code
+
 - Terraform
 - Ansible
+- Chef
+- Puppet
+
+### WebServers
+
+- Nginx
+- Apache
+
+### CI/CD
+
 - Jenkins
-- Github Actions
+- Github Actions ✔️
 - Gitlab CI/CD
 - ArgoCD
 - FluxCD
+- CircleCI
 
 
 #### Monitoring
@@ -96,8 +112,21 @@ Here I am listing some of the technologies I am planning to use in this project 
 - Zipkin
 - ELK
 - Datadog
+- Nagios
+
+### Cloud/Computing
+
+- AWS
+- GCP
+- Azure
+- Hadoop
+- DigitalOcean
 
 ### UX Patterns
 
 - Command -> Undo: for example instead of asking for confirmation when deleting a task I will offer the option to undo the change (similar to Gmail).
 
+
+### Geospatial
+
+- Tile38 (not sure how it will fit the TODO application yet)
