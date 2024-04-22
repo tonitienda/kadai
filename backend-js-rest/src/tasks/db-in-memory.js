@@ -22,6 +22,20 @@ function addTask(task) {
   TasksById[task.id] = task;
 }
 
+function updateTask(task) {
+  if (!TasksByOwner[task.ownerId]) {
+    TasksByOwner[task.ownerId] = [];
+  }
+
+  TasksById[task.id] = task;
+  for (let idx = 0; idx < TasksByOwner[task.ownerId].length; idx++) {
+    if (TasksByOwner[task.ownerId][idx].id == task.id) {
+      TasksByOwner[task.ownerId][idx] = task;
+      return;
+    }
+  }
+}
+
 function deleteTask(taskId) {
   const task = TasksById[taskId];
   if (!task) {
@@ -48,4 +62,5 @@ module.exports = {
   getTaskById,
   addTask,
   deleteTask,
+  updateTask,
 };
