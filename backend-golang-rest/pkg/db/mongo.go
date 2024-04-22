@@ -32,7 +32,7 @@ func (db *MongoDB) GetTasks(ownerID string) ([]tasks.Task, error) {
 	// initialization, and not every time.
 	collection := db.client.Database("kadai").Collection("tasks")
 
-	cur, err := collection.Find(context.Background(), bson.D{})
+	cur, err := collection.Find(context.Background(), bson.D{{"deletedAt", nil}})
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -63,6 +63,18 @@ func (db *MongoDB) AddTask(task tasks.Task) error {
 	collection := db.client.Database("kadai").Collection("tasks")
 
 	_, err := collection.InsertOne(context.Background(), task)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (db *MongoDB) UpdateTask(task tasks.Task) error {
+	collection := db.client.Database("kadai").Collection("tasks")
+
+	_, err := collection.UpdateOne(context.Background(), bson.D{{"id", task.ID}}, bson.D{{"$set", task}})
 
 	if err != nil {
 		return err
