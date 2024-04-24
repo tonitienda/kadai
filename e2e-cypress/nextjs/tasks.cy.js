@@ -40,9 +40,10 @@ const undo = (cy) => {
 };
 
 const assertNumTasks = (cy, numTasks) => {
-  cy.get("ul#task-list")
-    .find('li[id^="task-"]')
-    .should("have.length", numTasks);
+  // TODO - See this. Not sure if correct
+  cy.get("ul#task-list").then((taskList) => {
+    taskList.find('li[id^="task-"]').should("have.length", numTasks);
+  });
 };
 
 describe("Managing tasks", () => {
