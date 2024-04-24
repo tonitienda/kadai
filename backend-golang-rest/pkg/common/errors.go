@@ -30,6 +30,20 @@ func (e ForbiddenError) Error() string {
 	return e.message
 }
 
+type StatusIncorrectError struct {
+	message string
+}
+
+func (e StatusIncorrectError) Error() string {
+	return e.message
+}
+
+func NewStatusIncorrectError(message string) error {
+	return StatusIncorrectError{
+		message: message,
+	}
+}
+
 func NewValidationError(message string) error {
 	return ValidationError{
 		message: message,

@@ -28,7 +28,15 @@ func (db *InMemoryTasksDB) GetTasks(ownerID string) ([]Task, error) {
 		return []Task{}, nil
 	}
 
-	return tasks, nil
+	notDeletedTasks := []Task{}
+
+	for _, t := range tasks {
+		if t.DeletedAt.IsZero() {
+			notDeletedTasks = append(notDeletedTasks, t)
+		}
+	}
+
+	return notDeletedTasks, nil
 }
 
 func (db *InMemoryTasksDB) GetTask(taskID string) (Task, bool) {
@@ -43,6 +51,19 @@ func (db *InMemoryTasksDB) AddTask(task Task) error {
 	db.lock.Lock()
 	db.tasksByID[task.ID] = task
 	db.tasksByOwner[task.OwnerID] = append(db.tasksByOwner[task.OwnerID], task)
+	db.lock.Unlock()
+	return nil
+}
+
+func (db *InMemoryTasksDB) UpdateTask(task Task) error {
+	db.lock.Lock()
+	db.tasksByID[task.ID] = task
+
+	for idx, t := range db.tasksByOwner[task.OwnerID] {
+		if t.ID == task.ID {
+			db.tasksByOwner[task.OwnerID][idx] = task
+		}
+	}
 	db.lock.Unlock()
 	return nil
 }

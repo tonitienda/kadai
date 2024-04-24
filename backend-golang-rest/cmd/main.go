@@ -26,6 +26,13 @@ func ErrorHandler(h func(c *gin.Context) error) gin.HandlerFunc {
 			return
 
 		}
+
+		if _, ok := err.(common.StatusIncorrectError); ok {
+			c.JSON(http.StatusConflict, gin.H{"error": err.Error()})
+			return
+
+		}
+
 		if _, ok := err.(common.NotFoundError); ok {
 			c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 			return

@@ -2,6 +2,7 @@ package tasks
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -19,6 +20,8 @@ type Task struct {
 	Title       string
 	Description string
 	Status      string
+	DeletedAt   time.Time
+	DeletedBy   string
 }
 
 type TasksHandler struct {
@@ -30,6 +33,7 @@ type TasksDataSource interface {
 	GetTask(id string) (Task, bool)
 	AddTask(task Task) error
 	DeleteTask(id string) error
+	UpdateTask(task Task) error
 }
 
 func NewTasksHandler(ds TasksDataSource) *TasksHandler {
@@ -84,6 +88,10 @@ func canDeleteTask(userId string, task Task) error {
 	if task.OwnerID != userId {
 		return common.NewForbiddenError("You can only delete your own tasks")
 	}
+
+	if !task.DeletedAt.IsZero() {
+		return common.NewStatusIncorrectError("The task is already deleted")
+	}
 	return nil
 }
 
@@ -115,7 +123,10 @@ func (h *TasksHandler) DeleteTask(c *gin.Context) error {
 		return err
 	}
 
-	err = h.datasource.DeleteTask(taskId)
+	task.DeletedAt = time.Now()
+	task.DeletedBy = userId
+
+	err = h.datasource.UpdateTask(task)
 
 	if err != nil {
 		return err

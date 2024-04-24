@@ -1,6 +1,8 @@
 const express = require("express");
 const { v4: uuidv4 } = require("uuid");
+const core = require("./core");
 
+// TODO - Implement auth and get user id by token
 const ownerId = "6c8d5572-a815-49aa-9e6d-7fee79ddd59d";
 
 function makeTaskRouter(datasource) {
@@ -44,7 +46,7 @@ function makeTaskRouter(datasource) {
   });
 
   router.delete("/:taskId", async (req, res) => {
-    await datasource.deleteTask(req.params.taskId);
+    await core.deleteTask(datasource, req.params.taskId, ownerId);
     res.status(201).end();
   });
   return router;
