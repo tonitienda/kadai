@@ -48,6 +48,13 @@ Here I am listing some of the technologies I am planning to use in this project 
 - Websockets
 - Server Sent Events
 
+#### Acceptance / E2E Testing
+
+- BDD
+- Cypress ✔️ (AFAIK not suitable for tests that involve multiple browsers / users) 
+- Test Cafe
+- Selenium
+
 #### Message Brokers
 
 - Kafka
