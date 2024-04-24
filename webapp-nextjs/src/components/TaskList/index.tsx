@@ -7,7 +7,13 @@ import Divider from "@mui/material/Divider";
 import Input from "@mui/material/Input";
 import ListItemText from "@mui/material/ListItemText";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
-import { getTasks, addTask, deleteTask } from "@/api/tasks";
+import {
+  getTasks,
+  addTask,
+  deleteTask,
+  undoRequest,
+  UndoAction,
+} from "@/api/tasks";
 import PendingIcon from "@mui/icons-material/Pending";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -53,6 +59,7 @@ export default function TasksList() {
     title: "",
     description: "",
   });
+  const [undo, setUndo] = React.useState<UndoAction | null>(null);
 
   const refreshTasks = () => getTasks().then(setTasks);
 
@@ -65,6 +72,21 @@ export default function TasksList() {
       <Typography variant="h4" component="h3" gutterBottom>
         Tasks
       </Typography>
+      {
+        // TODO - Show Undo as a banner
+      }
+      {undo && (
+        <Button
+          id="undo"
+          onClick={() => {
+            undoRequest(undo)
+              .then(refreshTasks)
+              .then(() => setUndo(null));
+          }}
+        >
+          Undo
+        </Button>
+      )}
       <List id="task-list">
         {tasks.map((task: Task) => (
           <>
@@ -78,7 +100,10 @@ export default function TasksList() {
                   aria-label="delete-task"
                   onClick={async () => {
                     // FIXME: handle potential error
-                    await deleteTask(task.id).then(refreshTasks);
+                    await deleteTask(task.id).then((undo: UndoAction) => {
+                      setUndo(undo);
+                      refreshTasks();
+                    });
                   }}
                 >
                   <DeleteIcon />

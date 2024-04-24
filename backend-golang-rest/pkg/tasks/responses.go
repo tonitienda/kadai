@@ -17,3 +17,8 @@ type TaskResponse struct {
 func NewTaskResponse(task Task) TaskResponse {
 	return TaskResponse(task)
 }
+
+type TaskDeletionResponse struct {
+	Method string `json:"method"`
+	Url    string `json:"url"`
+}

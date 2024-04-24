@@ -25,6 +25,26 @@ const deleteAllTasks = (cy) => {
   });
 };
 
+const deleteFirstTask = (cy) => {
+  cy.get("ul#task-list").then((taskList) => {
+    if (taskList.find('li[id^="task-"]').length === 0) {
+      return;
+    }
+
+    taskList.find('li[id^="task-"]').find("button").click();
+  });
+};
+
+const undo = (cy) => {
+  cy.get("button").contains("Undo").click();
+};
+
+const assertNumTasks = (cy, numTasks) => {
+  cy.get("ul#task-list")
+    .find('li[id^="task-"]')
+    .should("have.length", numTasks);
+};
+
 describe("Managing tasks", () => {
   it("should get task list", () => {
     cy.log("should log in");
@@ -66,5 +86,10 @@ describe("Managing tasks", () => {
 
     deleteAllTasks(cy);
     addTasks(cy, 3);
+    assertNumTasks(cy, 3);
+    deleteFirstTask(cy);
+    assertNumTasks(cy, 2);
+    undo(cy);
+    assertNumTasks(cy, 3);
   });
 });
