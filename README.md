@@ -18,6 +18,9 @@ I would also try to keep the stack simple, short and [boring](https://mcfunley.c
 
 However, this project is a playground to test and learn new technologies so I can risk it and any technology I feel like.
 Here I am listing some of the technologies I am planning to use in this project and some of the patterns I want to try out.
+This is a sort of wishlist. The list will keep growing and I will not be able to use/learn everything listed there.
+
+I am marking with ✔️ the technologies/approaches I am using and with 🚧 the ones I started to add but are still not functional.
 
 ### Technologies
 
@@ -36,7 +39,7 @@ Here I am listing some of the technologies I am planning to use in this project 
 #### Frontend 
 
 - React with Nextjs ✔️
-- React with Remix
+- React with Remix 🚧
 - HTMX with Golang ✔️
 - HTMX with Nodejs/Ejs
 
