@@ -1,15 +1,27 @@
-<ul id="task-list">
-  {{ range $task := .Tasks }}
-  <li id="task-{{$task.ID}}">
-    <div class="card" style="width: 18rem">
-      <div class="card-body">
-        <h5 class="card-title">{{$task.Title}}</h5>
-        <p class="card-text">{{$task.Description}}</p>
-      </div>
-    </div>
-    <div class="card-footer">
-      <button hx-delete="/tasks/{{$task.ID}}" hx-target="#tasks">Delete</button>
-    </div>
-  </li>
+{{ if .Undo.Url }}
+<form
+  id="undoForm"
+  hx-post="/tasks/undo?url={{.Undo.Url}}&method={{.Undo.Method}}"
+  hx-target="#tasks"
+>
+<button type="submit">Undo</button>
+</form>
   {{ end }}
-</ul>
+  <ul id="task-list">
+    {{ range $task := .Tasks }}
+    <li id="task-{{$task.ID}}">
+      <div class="card" style="width: 18rem">
+        <div class="card-body">
+          <h5 class="card-title">{{$task.Title}}</h5>
+          <p class="card-text">{{$task.Description}}</p>
+        </div>
+      </div>
+      <div class="card-footer">
+        <button hx-delete="/tasks/{{$task.ID}}" hx-target="#tasks">
+          Delete
+        </button>
+      </div>
+    </li>
+    {{ end }}
+  </ul>
+</form>

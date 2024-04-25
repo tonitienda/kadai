@@ -18,6 +18,9 @@ export const DELETE = async function deleteTask(
     throw new Error("Failed to delete task");
   }
 
-  const resData = res.json();
+  const resData = await res.json();
+
+  console.log("deleteTask:", resData);
+
   return Response.json(resData);
 };

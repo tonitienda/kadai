@@ -1,12 +1,18 @@
 const TasksByOwner = {};
 const TasksById = {};
 
-function getTasks(ownerId) {
+async function getTasks(ownerId) {
+  console.log("Getting tasks");
+
   if (!TasksByOwner[ownerId]) {
     TasksByOwner[ownerId] = [];
   }
 
-  return Promise.resolve(TasksByOwner[ownerId]);
+  const nonDeletedTasks = TasksByOwner[ownerId].filter((t) => !t.deletedAt);
+
+  console.log("nonDeletedTasks", nonDeletedTasks);
+
+  return nonDeletedTasks;
 }
 
 function getTaskById(taskId) {
@@ -14,6 +20,8 @@ function getTaskById(taskId) {
 }
 
 function addTask(task) {
+  console.log("Inserting", task);
+
   if (!TasksByOwner[task.ownerId]) {
     TasksByOwner[task.ownerId] = [];
   }
@@ -23,6 +31,7 @@ function addTask(task) {
 }
 
 function updateTask(task) {
+  console.log("Updating", task);
   if (!TasksByOwner[task.ownerId]) {
     TasksByOwner[task.ownerId] = [];
   }
@@ -36,31 +45,9 @@ function updateTask(task) {
   }
 }
 
-function deleteTask(taskId) {
-  const task = TasksById[taskId];
-  if (!task) {
-    return;
-  }
-
-  delete TasksById[taskId];
-
-  const tasks = TasksByOwner[task.ownerId];
-  if (!tasks) {
-    return;
-  }
-
-  const index = tasks.indexOf(task);
-  if (index === -1) {
-    return;
-  }
-
-  tasks.splice(index, 1);
-}
-
 module.exports = {
   getTasks,
   getTaskById,
   addTask,
-  deleteTask,
   updateTask,
 };

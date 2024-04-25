@@ -1,3 +1,24 @@
+export type UndoAction = {
+  url: string;
+  method: string;
+  body?: any;
+};
+
+export async function undoRequest(undo: UndoAction) {
+  console.log("undoRequest:", undo);
+  const res = await fetch("/api/actions/undo", {
+    method: "POST",
+    body: JSON.stringify(undo),
+  });
+  // The return value is *not* serialized
+  // You can return Date, Map, Set, etc.
+
+  if (!res.ok) {
+    // This will activate the closest `error.js` Error Boundary
+    throw new Error("Failed to undo");
+  }
+}
+
 export async function getTasks() {
   const res = await fetch("/api/tasks");
 
@@ -42,5 +63,10 @@ export async function deleteTask(taskID: string) {
     throw new Error("Failed to delete task");
   }
 
-  return;
+  // TODO - Validate response
+  const undo = (await res.json()) as UndoAction;
+
+  console.log("deleteTask:", undo);
+
+  return undo;
 }

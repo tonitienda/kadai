@@ -45,9 +45,22 @@ function makeTaskRouter(datasource) {
     addTask(req, res);
   });
 
+  router.post("/:taskId/undo-delete", async (req, res) => {
+    console.log("POST /undo-delete");
+    const taskId = req.params.taskId;
+    await core.undeleteTask(datasource, taskId, ownerId);
+
+    res.status(202).end();
+  });
+
   router.delete("/:taskId", async (req, res) => {
-    await core.deleteTask(datasource, req.params.taskId, ownerId);
-    res.status(201).end();
+    const taskId = req.params.taskId;
+    await core.deleteTask(datasource, taskId, ownerId);
+
+    res.status(202).json({
+      url: `/v0/tasks/${taskId}/undo-delete`,
+      method: "POST",
+    });
   });
   return router;
 }

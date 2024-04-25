@@ -103,6 +103,7 @@ func setupRouter() *gin.Engine {
 		tasks.GET("", ErrorHandler(tasksHandler.GetTasks))
 		tasks.POST("", ErrorHandler(tasksHandler.AddTask))
 		tasks.DELETE("/:taskID", ErrorHandler(tasksHandler.DeleteTask))
+		tasks.POST("/:taskID/undo-delete", ErrorHandler(tasksHandler.UndoDeletion))
 	}
 
 	r.GET("/healthz", func(c *gin.Context) {

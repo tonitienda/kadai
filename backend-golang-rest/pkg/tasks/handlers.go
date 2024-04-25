@@ -1,6 +1,7 @@
 package tasks
 
 import (
+	"fmt"
 	"net/http"
 	"time"
 
@@ -95,6 +96,19 @@ func canDeleteTask(userId string, task Task) error {
 	return nil
 }
 
+func canUndoTaskDeletion(userId string, task Task) error {
+	if task.DeletedBy != userId {
+		return common.NewForbiddenError("You can only recover the tasks you deleted")
+	}
+
+	fmt.Println("task.DeletedAt:" + task.DeletedAt.Local().String())
+
+	if task.DeletedAt.IsZero() {
+		return common.NewStatusIncorrectError("The task is not deleted")
+	}
+	return nil
+}
+
 func (h *TasksHandler) DeleteTask(c *gin.Context) error {
 	userId := c.GetString("userId")
 
@@ -127,6 +141,64 @@ func (h *TasksHandler) DeleteTask(c *gin.Context) error {
 	task.DeletedBy = userId
 
 	err = h.datasource.UpdateTask(task)
+
+	if err != nil {
+		return err
+	}
+
+	c.JSON(http.StatusAccepted, TaskDeletionResponse{
+		Url:    fmt.Sprintf("/v0/tasks/%s/undo-delete", task.ID),
+		Method: "POST",
+	})
+	return nil
+}
+
+func (h *TasksHandler) UndoDeletion(c *gin.Context) error {
+	fmt.Println("Undoing deletion")
+	userId := c.GetString("userId")
+
+	if !common.IsValidUUID(userId) {
+		return common.NewValidationError("Invalid userId")
+	}
+	taskId, taskIdParamFound := c.Params.Get("taskID")
+
+	if !taskIdParamFound {
+		return common.NewValidationError("taskID not found")
+	}
+
+	if !common.IsValidUUID(taskId) {
+		return common.NewValidationError("Invalid taskID")
+	}
+	fmt.Println("Undeleting " + taskId)
+
+	task, taskFound := h.datasource.GetTask(taskId)
+
+	if !taskFound {
+		fmt.Println("Task NOT found")
+
+		return common.NewNotFoundError("Task not found")
+	}
+	fmt.Println("Task found " + task.ID)
+
+	err := canUndoTaskDeletion(userId, task)
+
+	if err != nil {
+		fmt.Println("Cannot delete: " + err.Error())
+
+		return err
+	}
+
+	deletedTask := Task{
+		ID:          task.ID,
+		OwnerID:     task.OwnerID,
+		Title:       task.Title,
+		Description: task.Description,
+		Status:      task.Status,
+	}
+
+	fmt.Println("Updating task ")
+
+	err = h.datasource.UpdateTask(deletedTask)
 
 	if err != nil {
 		return err
