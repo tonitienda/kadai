@@ -188,12 +188,17 @@ func (h *TasksHandler) UndoDeletion(c *gin.Context) error {
 		return err
 	}
 
-	task.OwnerID = ""
-	task.DeletedAt = time.Time{}
+	deletedTask := Task{
+		ID:          task.ID,
+		OwnerID:     task.OwnerID,
+		Title:       task.Title,
+		Description: task.Description,
+		Status:      task.Status,
+	}
 
 	fmt.Println("Updating task ")
 
-	err = h.datasource.UpdateTask(task)
+	err = h.datasource.UpdateTask(deletedTask)
 
 	if err != nil {
 		return err
