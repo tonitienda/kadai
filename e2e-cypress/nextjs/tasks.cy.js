@@ -31,7 +31,7 @@ const deleteFirstTask = (cy) => {
       return;
     }
 
-    taskList.find('li[id^="task-"]').find("button").click();
+    taskList.find('li[id^="task-"]').find("button").first().click();
   });
 };
 
@@ -41,8 +41,10 @@ const undo = (cy) => {
 
 const assertNumTasks = (cy, numTasks) => {
   // TODO - See this. Not sure if correct
-  cy.get("ul#task-list").then((taskList) => {
-    taskList.find('li[id^="task-"]').should("have.length", numTasks);
+  cy.get("ul#task-list").then(() => {
+    cy.get("ul#task-list")
+      .find('li[id^="task-"]')
+      .should("have.length", numTasks);
   });
 };
 
@@ -86,11 +88,18 @@ describe("Managing tasks", () => {
     });
 
     deleteAllTasks(cy);
+    cy.screenshot("1-after-delete-all-tasks");
     addTasks(cy, 3);
     assertNumTasks(cy, 3);
+
+    cy.screenshot("2-after-adding-3-tasks");
     deleteFirstTask(cy);
     assertNumTasks(cy, 2);
+
+    cy.screenshot("3-after-deleting-first-task");
     undo(cy);
+
+    cy.screenshot("4-after-clicking-undo");
     assertNumTasks(cy, 3);
   });
 });

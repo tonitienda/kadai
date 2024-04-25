@@ -15,6 +15,11 @@ import (
 	"golang.org/x/oauth2"
 )
 
+type TasksListData struct {
+	Tasks []tasks.Task
+	Undo  tasks.Undo
+}
+
 var templates = template.Must(template.ParseGlob("templates/*.html"))
 
 func init() {
@@ -41,26 +46,7 @@ func main() {
 		return
 	}
 
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		t := []tasks.Task{}
-
-		cookie, _ := r.Cookie("access_token")
-		if cookie != nil {
-			t, err = tasks.GetTasks(cookie.Value)
-
-			if err != nil {
-				fmt.Println("Failed to add task: ", err)
-				http.Error(w, "Failed to get tasks", http.StatusInternalServerError)
-				return
-			}
-		}
-
-		templates.ExecuteTemplate(w, "index.html", struct{ Tasks []tasks.Task }{
-			Tasks: t,
-		})
-	})
-
-	http.HandleFunc("/login", func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("GET /login", func(w http.ResponseWriter, r *http.Request) {
 
 		state, err := generateRandomState()
 		if err != nil {
@@ -76,6 +62,27 @@ func main() {
 
 		http.Redirect(w, r, authUrl, http.StatusTemporaryRedirect)
 
+	})
+
+	http.HandleFunc("GET /", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println("GET /")
+
+		t := []tasks.Task{}
+
+		cookie, _ := r.Cookie("access_token")
+		if cookie != nil {
+			t, err = tasks.GetTasks(cookie.Value)
+
+			if err != nil {
+				fmt.Println("Failed to add task: ", err)
+				http.Error(w, "Failed to get tasks", http.StatusInternalServerError)
+				return
+			}
+		}
+
+		templates.ExecuteTemplate(w, "index.html", TasksListData{
+			Tasks: t,
+		})
 	})
 
 	http.HandleFunc("POST /tasks", func(w http.ResponseWriter, r *http.Request) {
@@ -114,23 +121,57 @@ func main() {
 			fmt.Println("Tasks: ", t)
 		}
 
-		templates.ExecuteTemplate(w, "task-list.html", struct{ Tasks []tasks.Task }{
+		templates.ExecuteTemplate(w, "task-list.html", TasksListData{
 			Tasks: t,
 		})
 	})
 
-	http.HandleFunc("DELETE /tasks", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Println("DELETE /tasks")
+	http.HandleFunc("POST /tasks/undo", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println("POST /tasks/undo")
 
-		path := strings.TrimPrefix(r.URL.Path, "/tasks/")
-		id := strings.TrimSuffix(path, "/")
-		fmt.Fprintf(w, "Deleting task with ID: %s", id)
+		url := r.URL.Query().Get("url")
+		method := r.URL.Query().Get("method")
 
 		t := []tasks.Task{}
 
 		cookie, _ := r.Cookie("access_token")
 		if cookie != nil {
-			err := tasks.DeleteTask(cookie.Value, id)
+			err = tasks.UndoTaskChange(cookie.Value, url, method)
+
+			if err != nil {
+				fmt.Println("Failed to undo task change: ", err)
+				http.Error(w, "Failed to undo task change", http.StatusInternalServerError)
+				return
+			}
+
+			t, err = tasks.GetTasks(cookie.Value)
+
+			if err != nil {
+				fmt.Println("Failed to get tasks: ", err)
+				http.Error(w, "Failed to get tasks", http.StatusInternalServerError)
+				return
+			}
+
+			fmt.Println("Tasks: ", t)
+		}
+
+		templates.ExecuteTemplate(w, "task-list.html", TasksListData{
+			Tasks: t,
+		})
+	})
+
+	http.HandleFunc("DELETE /tasks/*", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println("DELETE /tasks")
+
+		path := strings.TrimPrefix(r.URL.Path, "/tasks/")
+		id := strings.TrimSuffix(path, "/")
+
+		t := []tasks.Task{}
+		undo := tasks.Undo{}
+
+		cookie, _ := r.Cookie("access_token")
+		if cookie != nil {
+			undo, err = tasks.DeleteTask(cookie.Value, id)
 
 			if err != nil {
 				fmt.Println("Failed to delete task: ", err)
@@ -146,15 +187,16 @@ func main() {
 				return
 			}
 
-			fmt.Println("Tasks: ", t)
 		}
+		fmt.Printf("Executing template with tasks: %v\n", t)
 
-		templates.ExecuteTemplate(w, "task-list.html", struct{ Tasks []tasks.Task }{
+		templates.ExecuteTemplate(w, "task-list.html", TasksListData{
 			Tasks: t,
+			Undo:  undo,
 		})
 	})
 
-	http.HandleFunc("/callback", func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("GET /callback", func(w http.ResponseWriter, r *http.Request) {
 		storedState, err := r.Cookie("auth_state")
 		if err != nil {
 			// Handle cookie not found error

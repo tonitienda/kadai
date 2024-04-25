@@ -174,12 +174,17 @@ func (h *TasksHandler) UndoDeletion(c *gin.Context) error {
 	task, taskFound := h.datasource.GetTask(taskId)
 
 	if !taskFound {
+		fmt.Println("Task NOT found")
+
 		return common.NewNotFoundError("Task not found")
 	}
+	fmt.Println("Task found " + task.ID)
 
 	err := canUndoTaskDeletion(userId, task)
 
 	if err != nil {
+		fmt.Println("Cannot delete: " + err.Error())
+
 		return err
 	}
 
