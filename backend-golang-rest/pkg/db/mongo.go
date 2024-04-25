@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"time"
 
@@ -72,6 +73,9 @@ func (db *MongoDB) AddTask(task tasks.Task) error {
 }
 
 func (db *MongoDB) UpdateTask(task tasks.Task) error {
+
+	existingTask, _ := db.GetTask(task.ID)
+	fmt.Println("Updating task", existingTask, "to", task)
 	collection := db.client.Database("kadai").Collection("tasks")
 
 	_, err := collection.UpdateOne(context.Background(), bson.D{{"id", task.ID}}, bson.D{{"$set", task}})
@@ -79,6 +83,9 @@ func (db *MongoDB) UpdateTask(task tasks.Task) error {
 	if err != nil {
 		return err
 	}
+
+	existingTask, _ = db.GetTask(task.ID)
+	fmt.Println("After updating task", existingTask)
 
 	return nil
 }

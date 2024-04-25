@@ -188,17 +188,12 @@ func (h *TasksHandler) UndoDeletion(c *gin.Context) error {
 		return err
 	}
 
-	// TODO - See how to reset the "deletedAt"
-	task2 := Task{
-		ID:          task.ID,
-		OwnerID:     task.OwnerID,
-		Title:       task.Title,
-		Description: task.Description,
-		Status:      task.Status,
-	}
+	task.OwnerID = ""
+	task.DeletedAt = time.Time{}
+
 	fmt.Println("Updating task ")
 
-	err = h.datasource.UpdateTask(task2)
+	err = h.datasource.UpdateTask(task)
 
 	if err != nil {
 		return err
