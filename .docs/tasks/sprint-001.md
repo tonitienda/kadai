@@ -10,3 +10,4 @@
   - [ ] Improve UX
     - [ ] Clean and improve UI
     - [ ] When a task is deleted offer the option to undo the change (similar to Gmail)
+    - [ ] FIX: JS Backend is not saving title and description properly

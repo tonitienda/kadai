@@ -134,7 +134,8 @@ I am marking with ✔️ the technologies/approaches I am using and with 🚧 th
 
 ### UX Patterns
 
-- Command -> Undo: for example instead of asking for confirmation when deleting a task I will offer the option to undo the change (similar to Gmail).
+- Command -> Undo: 🚧 
+  for example instead of asking for confirmation when deleting a task I will offer the option to undo the change (similar to Gmail).
 
 
 ### Geospatial
