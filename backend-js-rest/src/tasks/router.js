@@ -21,6 +21,11 @@ function makeTaskRouter(datasource) {
   }
 
   router.get("/", async (req, res) => {
+    if (!req.headers["authorization"]) {
+      res.status(401).end();
+      return;
+    }
+
     const tasks = await datasource.getTasks(ownerId);
     res.json(tasks);
   });

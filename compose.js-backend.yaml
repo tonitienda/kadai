@@ -3,3 +3,6 @@ services:
   backend:
     build:
       context: ./backend-js-rest
+      dockerfile: Dockerfile
+    env_file:
+      - .env

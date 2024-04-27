@@ -1,12 +1,12 @@
 version: '3.7'
 services:
-  webapp:
+  e2e:
     build:
       dockerfile: Dockerfile
-      context: ./webapp-nextjs
+      context: bdd-go
     depends_on:
       - backend
-    volumes:
-      - .env:/app/.env.local
+    env_file:
+      - .env
 
-     
+

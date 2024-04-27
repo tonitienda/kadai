@@ -3,6 +3,9 @@ services:
   webapp:
     build:
       context: ./webapp-golang-htmx
+      dockerfile: Dockerfile
+    depends_on:
+      - backend
     env_file:
       - .env
     environment:

@@ -1,6 +1,10 @@
 package authentication
 
-import "github.com/google/uuid"
+import (
+	"fmt"
+
+	"github.com/google/uuid"
+)
 
 type User struct {
 	ID    string
@@ -30,6 +34,7 @@ func (a Auth) GetUserIdBySub(sub string) (string, bool) {
 		err := a.db.AddUser(user)
 
 		if err != nil {
+			fmt.Printf("The user cound not be added: %v\n", err)
 			return "", false
 		}
 	}

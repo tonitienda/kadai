@@ -42,10 +42,16 @@ func NewTasksHandler(ds TasksDataSource) *TasksHandler {
 }
 
 func (h *TasksHandler) GetTasks(c *gin.Context) error {
+	fmt.Println("Getting tasks")
 	userId := c.GetString("userId")
+
+	fmt.Println("UserId:", userId)
+
 	tasks, err := h.datasource.GetTasks(userId)
 
 	if err != nil {
+		fmt.Printf("Error getting tasks: %v\n", err)
+
 		return err
 	}
 

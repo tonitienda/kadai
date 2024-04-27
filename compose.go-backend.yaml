@@ -3,3 +3,6 @@ services:
   backend:
     build:
       context: ./backend-golang-rest
+      dockerfile: Dockerfile
+    env_file:
+      - .env
