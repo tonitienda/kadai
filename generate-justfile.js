@@ -2,56 +2,102 @@ const fs = require("node:fs");
 
 const frontEnds = ["next", "golang-htmx"];
 const backends = ["go", "js"];
-const testRunners = ["cypress"];
+const e2eRunners = ["cypress"];
+const apiRunners = ["bdd-go"];
 const dbs = ["inmemory", "mongo"];
 
-const makeJustTasks = ({ frontend, backend, runner, db }) => `
+const makeJustE2ETestTasks = ({ frontend, backend, runner, db }) => `
 test-${runner}-${frontend}-${backend}-${db}:
+  docker compose \\
+  -f compose.${frontend}-frontend.yaml \\
+  -f compose.${backend}-backend.yaml \\
+  -f compose.db-${db}.yaml \\
+  -f compose.e2e-${runner}.yaml \\
+  config
+
   COMPOSE_PROJECT_NAME="kadai-${runner}-${frontend}-${backend}-${db}" docker compose \\
-     -f docker-compose.yaml \\
      -f compose.${frontend}-frontend.yaml \\
      -f compose.${backend}-backend.yaml \\
      -f compose.db-${db}.yaml \\
      -f compose.e2e-${runner}.yaml \\
      up --build --exit-code-from e2e
 
-start-${frontend}-${backend}-${db}:
-     COMPOSE_PROJECT_NAME="kadai-${runner}-${frontend}-${backend}-${db}" docker compose \\
-        -f docker-compose.yaml \\
-        -f compose.${frontend}-frontend.yaml \\
-        -f compose.${backend}-backend.yaml \\
-        -f compose.db-${db}.yaml \\
-        -f compose.expose-ports.yaml \\
-        up --build
-   `;
+`;
 
-const combinations = frontEnds.flatMap((f) =>
-  backends.flatMap((b) =>
-    testRunners.flatMap((r) =>
-      dbs.flatMap((db) => ({
-        frontend: f,
-        backend: b,
-        runner: r,
-        db: db,
-      }))
-    )
-  )
+const makeJustApiTestTasks = ({ backend, runner, db }) => `
+test-${runner}-${backend}-${db}:
+  docker compose \\
+  -f compose.${backend}-backend.yaml \\
+  -f compose.db-${db}.yaml \\
+  -f compose.e2e-${runner}.yaml \\
+  config
+
+  COMPOSE_PROJECT_NAME="kadai-${runner}-${backend}-${db}" docker compose \\
+     -f compose.${backend}-backend.yaml \\
+     -f compose.db-${db}.yaml \\
+     -f compose.e2e-${runner}.yaml \\
+     up --build --exit-code-from e2e
+
+`;
+
+const makeJustStartTasks = ({ frontend, backend, db }) => `
+   
+start-${frontend}-${backend}-${db}:
+  docker compose \\
+  -f compose.${frontend}-frontend.yaml \\
+  -f compose.${backend}-backend.yaml \\
+  -f compose.db-${db}.yaml \\
+  config
+
+  COMPOSE_PROJECT_NAME="kadai-${frontend}-${backend}-${db}" docker compose \\
+      -f compose.${frontend}-frontend.yaml \\
+      -f compose.${backend}-backend.yaml \\
+      -f compose.db-${db}.yaml \\
+      -f compose.expose-ports.yaml \\
+      up --build
+    
+`;
+
+const apiCombinations = backends.flatMap((b) =>
+  dbs.flatMap((db) => ({
+    backend: b,
+    db: db,
+  }))
 );
 
-console.log(combinations);
+const appCombinations = frontEnds.flatMap((f) =>
+  apiCombinations.map((combination) => ({
+    ...combination,
+    frontend: f,
+  }))
+);
+
+const apiTestsCombinations = apiCombinations.flatMap((a) =>
+  apiRunners.flatMap((r) => ({
+    ...a,
+    runner: r,
+  }))
+);
+
+const e2eTestsCombinations = appCombinations.flatMap((a) =>
+  e2eRunners.flatMap((r) => ({
+    ...a,
+    runner: r,
+  }))
+);
 
 const contents =
-  combinations.reduce(
-    (contents, combination) => contents + makeJustTasks(combination),
+  appCombinations.reduce(
+    (contents, combination) => contents + makeJustStartTasks(combination),
     ""
   ) +
-  `
-test-all: ${combinations.reduce(
-    (contents, { runner, frontend, backend, db }) =>
-      contents +
-      `
-      just test-${runner}-${frontend}-${backend}-${db}`,
+  e2eTestsCombinations.reduce(
+    (contents, combination) => contents + makeJustE2ETestTasks(combination),
     ""
-  )}`;
+  ) +
+  apiTestsCombinations.reduce(
+    (contents, combination) => contents + makeJustApiTestTasks(combination),
+    ""
+  );
 
 fs.writeFileSync("justfile", contents);

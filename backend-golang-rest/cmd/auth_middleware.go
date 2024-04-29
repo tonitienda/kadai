@@ -18,7 +18,15 @@ type Auth interface {
 func TokenAuthMiddleware(auth Auth) gin.HandlerFunc {
 
 	return func(c *gin.Context) {
-		tokenString := c.Request.Header.Get("Authorization")[7:] // Skip "Bearer "
+		authHeader := c.Request.Header.Get("Authorization")
+
+		if len(authHeader) <= 7 {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Token was not provided"})
+			c.Abort()
+			return
+		}
+
+		tokenString := authHeader[7:]
 
 		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
