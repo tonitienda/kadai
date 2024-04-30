@@ -7,6 +7,17 @@ const systemtests = ["bdd-go"];
 const dbs = ["inmemory", "mongo"];
 
 const makeJustE2ETestTasks = ({ frontend, backend, runner, db }) => `
+
+ci-${runner}-${frontend}-${backend}-${db}:
+  COMPOSE_PROJECT_NAME="kadai-${runner}-${frontend}-${backend}-${db}" docker compose \\
+     --profile e2e \\
+     -f compose.frontend-${frontend}.yaml \\
+     -f compose.backend-${backend}.yaml \\
+     -f compose.db-${db}.yaml \\
+     -f compose.e2e-${runner}.yaml \\
+     -f compose.ci.yaml
+     up --build --exit-code-from e2e
+
 test-${runner}-${frontend}-${backend}-${db}:
   COMPOSE_PROJECT_NAME="kadai-${runner}-${frontend}-${backend}-${db}" docker compose \\
      -f compose.frontend-${frontend}.yaml \\
@@ -18,12 +29,21 @@ test-${runner}-${frontend}-${backend}-${db}:
 `;
 
 const makeJustSystemTestTasks = ({ backend, runner, db }) => `
+ci-${runner}-${backend}-${db}:
+  COMPOSE_PROJECT_NAME="kadai-${runner}-${backend}-${db}" docker compose \\
+    --profile system \\
+     -f compose.backend-${backend}.yaml \\
+     -f compose.db-${db}.yaml \\
+     -f compose.system-${runner}.yaml \\
+     -f compose.ci.yaml \\
+     up --build --exit-code-from system
+
 test-${runner}-${backend}-${db}:
   COMPOSE_PROJECT_NAME="kadai-${runner}-${backend}-${db}" docker compose \\
      -f compose.backend-${backend}.yaml \\
      -f compose.db-${db}.yaml \\
      -f compose.system-${runner}.yaml \\
-     up --build --exit-code-from e2e
+     up --build --exit-code-from system
 
 `;
 
