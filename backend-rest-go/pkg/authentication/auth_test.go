@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/tonitienda/kadai/backend-golang-rest/pkg/common"
+	"github.com/tonitienda/kadai/backend-rest-go/pkg/common"
 )
 
 func TestAuthenticateNewUser(t *testing.T) {

@@ -9,7 +9,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
-	"github.com/tonitienda/kadai/backend-golang-rest/pkg/tasks"
+	"github.com/tonitienda/kadai/backend-rest-go/pkg/tasks"
 )
 
 func TestGetTasksAnonymousUser(t *testing.T) {

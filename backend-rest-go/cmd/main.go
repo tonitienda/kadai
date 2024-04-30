@@ -6,10 +6,10 @@ import (
 	"os"
 
 	"github.com/gin-gonic/gin"
-	"github.com/tonitienda/kadai/backend-golang-rest/pkg/authentication"
-	"github.com/tonitienda/kadai/backend-golang-rest/pkg/common"
-	"github.com/tonitienda/kadai/backend-golang-rest/pkg/db"
-	"github.com/tonitienda/kadai/backend-golang-rest/pkg/tasks"
+	"github.com/tonitienda/kadai/backend-rest-go/pkg/authentication"
+	"github.com/tonitienda/kadai/backend-rest-go/pkg/common"
+	"github.com/tonitienda/kadai/backend-rest-go/pkg/db"
+	"github.com/tonitienda/kadai/backend-rest-go/pkg/tasks"
 )
 
 const (

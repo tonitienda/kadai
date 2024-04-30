@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/cucumber/godog"
-	"github.com/tonitienda/kadai/acceptance-go/pkg/api"
+	"github.com/tonitienda/kadai/bdd-go/pkg/api"
 )
 
 type TestsImpl interface {

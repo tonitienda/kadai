@@ -1,5 +1,5 @@
 {
-  "name": "backend-js-rest",
+  "name": "backend-rest-js",
   "version": "1.0.0",
   "description": "Backend for the Kadai application",
   "main": "src/index.js",

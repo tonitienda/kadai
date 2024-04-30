@@ -6,7 +6,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/tonitienda/kadai/backend-golang-rest/pkg/tasks"
+	"github.com/tonitienda/kadai/backend-rest-go/pkg/tasks"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"

@@ -1,8 +1,7 @@
-version: '3.7'
 services:
   webapp:
     build:
-      context: ./webapp-golang-htmx
+      context: ./webapp-htmx-go
       dockerfile: Dockerfile
     depends_on:
       - backend
