@@ -1,0 +1,61 @@
+
+flowchart TD
+
+subgraph webapps
+  
+     nextjs["nextjs
+     [typescript]
+     "]
+
+     htmx-go["HTMX
+     [go]
+     "]
+end
+
+subgraph backends
+  
+     go["REST
+     [go]"]
+
+     js["REST
+     [js]"]
+end
+
+subgraph dbs
+    
+       inmemory[("In Memory")]
+
+       mongo[("Mongo")]
+end
+
+subgraph e2e
+      
+         cypress["E2E Cypress
+         [js]"]
+end
+
+subgraph systemtests
+      
+         bdd-go["BDD
+         [go]"]
+end
+
+webapps -- uses --> backends
+backends -- "stores data in" --> dbs
+
+e2e -- tests --> webapps
+systemtests -- tests ---> backends
+
+
+classDef Tier fill:#08427b,color:#ccc,stroke:#333
+classDef Service fill:#1168bd,color:#ccc,stroke:#333
+classDef Tests fill:#087b42,color:#333,stroke:#333
+classDef TestService fill:#11bd68,color:#333,stroke:#333
+
+
+class e2e,systemtests Tests
+class webapps,backends,dbs Tier
+class nextjs,htmx-go,go,js,inmemory,mongo Service
+class cypress,bdd-go TestService
+
+
