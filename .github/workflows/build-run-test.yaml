@@ -15,6 +15,9 @@ jobs:
   # In build job and once for each backend when testing e2e
   build:
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
     strategy:
       matrix:
         service:
