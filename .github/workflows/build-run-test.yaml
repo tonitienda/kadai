@@ -36,10 +36,10 @@ jobs:
       - name: Build Docker image
         run: |
           docker build -t ${{ matrix.service }} ${{ matrix.service }} \
-          --tag kadai/${{ matrix.service }}:${GITHUB_SHA}
+          --tag ghcr.io/${{ github.repository_owner }}/kadai/${{ matrix.service }}:${GITHUB_SHA}
       - name: Push Docker image
         run: |
-          docker push kadai/${{ matrix.service }}:${GITHUB_SHA}
+          docker push ghcr.io/${{ github.repository_owner }}/kadai/${{ matrix.service }}:${GITHUB_SHA}
   api:
     runs-on: ubuntu-latest
     needs: build
