@@ -82,7 +82,7 @@ jobs:
           WEBAPP_IMAGE=ghcr.io/${{ github.repository_owner }}/kadai/${{ matrix.frontend }}:${GITHUB_SHA} \
           BACKEND_IMAGE=ghcr.io/${{ github.repository_owner }}/kadai/${{ matrix.backend }}:${GITHUB_SHA} \
           RUNNER_IMAGE=ghcr.io/${{ github.repository_owner }}/kadai/${{ matrix.runner }}:${GITHUB_SHA} \
-          just test-${{ matrix.runner }}-${{ matrix.frontend }}-${{ matrix.backend }}-${{ matrix.db }}
+          just ci-${{ matrix.runner }}-${{ matrix.frontend }}-${{ matrix.backend }}-${{ matrix.db }}
       - name: Upload test screenshots
         uses: actions/upload-artifact@v4.3.3
         with:
