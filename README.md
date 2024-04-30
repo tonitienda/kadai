@@ -69,6 +69,12 @@ I am marking with ✔️ the technologies/approaches I am using and with 🚧 th
 - Postgresql
 - Mysql
 - MongoDB 🚧
+- Neo4j
+- Datomic
+- Sqlite ?
+- Cassandra ?
+- Snowflake ?
+- Databricks ?
 
 
 #### Cache
