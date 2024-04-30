@@ -4,6 +4,8 @@ services:
     build:
       dockerfile: Dockerfile
       context: ./webapp-nextjs
+      when: 
+        - BUILD_IMAGES_LOCALLY==true
     depends_on:
       - backend
     volumes:
