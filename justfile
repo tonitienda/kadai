@@ -91,7 +91,7 @@ ci-cypress-nextjs-go-inmemory:
      -f compose.db-inmemory.yaml \
      -f compose.e2e-cypress.yaml \
      -f compose.ci.yaml \
-     up --build --exit-code-from e2e
+     up --no-build --exit-code-from e2e
 
 test-cypress-nextjs-go-inmemory:
   COMPOSE_PROJECT_NAME="kadai-cypress-nextjs-go-inmemory" docker compose \
@@ -111,7 +111,7 @@ ci-cypress-nextjs-go-mongo:
      -f compose.db-mongo.yaml \
      -f compose.e2e-cypress.yaml \
      -f compose.ci.yaml \
-     up --build --exit-code-from e2e
+     up --no-build --exit-code-from e2e
 
 test-cypress-nextjs-go-mongo:
   COMPOSE_PROJECT_NAME="kadai-cypress-nextjs-go-mongo" docker compose \
@@ -131,7 +131,7 @@ ci-cypress-nextjs-js-inmemory:
      -f compose.db-inmemory.yaml \
      -f compose.e2e-cypress.yaml \
      -f compose.ci.yaml \
-     up --build --exit-code-from e2e
+     up --no-build --exit-code-from e2e
 
 test-cypress-nextjs-js-inmemory:
   COMPOSE_PROJECT_NAME="kadai-cypress-nextjs-js-inmemory" docker compose \
@@ -151,7 +151,7 @@ ci-cypress-nextjs-js-mongo:
      -f compose.db-mongo.yaml \
      -f compose.e2e-cypress.yaml \
      -f compose.ci.yaml \
-     up --build --exit-code-from e2e
+     up --no-build --exit-code-from e2e
 
 test-cypress-nextjs-js-mongo:
   COMPOSE_PROJECT_NAME="kadai-cypress-nextjs-js-mongo" docker compose \
@@ -171,7 +171,7 @@ ci-cypress-htmx-go-go-inmemory:
      -f compose.db-inmemory.yaml \
      -f compose.e2e-cypress.yaml \
      -f compose.ci.yaml \
-     up --build --exit-code-from e2e
+     up --no-build --exit-code-from e2e
 
 test-cypress-htmx-go-go-inmemory:
   COMPOSE_PROJECT_NAME="kadai-cypress-htmx-go-go-inmemory" docker compose \
@@ -191,7 +191,7 @@ ci-cypress-htmx-go-go-mongo:
      -f compose.db-mongo.yaml \
      -f compose.e2e-cypress.yaml \
      -f compose.ci.yaml \
-     up --build --exit-code-from e2e
+     up --no-build --exit-code-from e2e
 
 test-cypress-htmx-go-go-mongo:
   COMPOSE_PROJECT_NAME="kadai-cypress-htmx-go-go-mongo" docker compose \
@@ -211,7 +211,7 @@ ci-cypress-htmx-go-js-inmemory:
      -f compose.db-inmemory.yaml \
      -f compose.e2e-cypress.yaml \
      -f compose.ci.yaml \
-     up --build --exit-code-from e2e
+     up --no-build --exit-code-from e2e
 
 test-cypress-htmx-go-js-inmemory:
   COMPOSE_PROJECT_NAME="kadai-cypress-htmx-go-js-inmemory" docker compose \
@@ -231,7 +231,7 @@ ci-cypress-htmx-go-js-mongo:
      -f compose.db-mongo.yaml \
      -f compose.e2e-cypress.yaml \
      -f compose.ci.yaml \
-     up --build --exit-code-from e2e
+     up --no-build --exit-code-from e2e
 
 test-cypress-htmx-go-js-mongo:
   COMPOSE_PROJECT_NAME="kadai-cypress-htmx-go-js-mongo" docker compose \
@@ -249,7 +249,7 @@ ci-bdd-go-go-inmemory:
      -f compose.db-inmemory.yaml \
      -f compose.system-bdd-go.yaml \
      -f compose.ci.yaml \
-     up --build --exit-code-from system
+     up  --no-build --exit-code-from system
 
 test-bdd-go-go-inmemory:
   COMPOSE_PROJECT_NAME="kadai-bdd-go-go-inmemory" docker compose \
@@ -266,7 +266,7 @@ ci-bdd-go-go-mongo:
      -f compose.db-mongo.yaml \
      -f compose.system-bdd-go.yaml \
      -f compose.ci.yaml \
-     up --build --exit-code-from system
+     up  --no-build --exit-code-from system
 
 test-bdd-go-go-mongo:
   COMPOSE_PROJECT_NAME="kadai-bdd-go-go-mongo" docker compose \
@@ -283,7 +283,7 @@ ci-bdd-go-js-inmemory:
      -f compose.db-inmemory.yaml \
      -f compose.system-bdd-go.yaml \
      -f compose.ci.yaml \
-     up --build --exit-code-from system
+     up  --no-build --exit-code-from system
 
 test-bdd-go-js-inmemory:
   COMPOSE_PROJECT_NAME="kadai-bdd-go-js-inmemory" docker compose \
@@ -300,7 +300,7 @@ ci-bdd-go-js-mongo:
      -f compose.db-mongo.yaml \
      -f compose.system-bdd-go.yaml \
      -f compose.ci.yaml \
-     up --build --exit-code-from system
+     up  --no-build --exit-code-from system
 
 test-bdd-go-js-mongo:
   COMPOSE_PROJECT_NAME="kadai-bdd-go-js-mongo" docker compose \
