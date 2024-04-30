@@ -67,7 +67,7 @@ jobs:
       - name: Run E2E tests
         run: just test-${{ matrix.runner }}-${{ matrix.frontend }}-${{ matrix.backend }}-${{ matrix.db }}
       - name: Upload test screenshots
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4.3.3
         with:
           name: e2e-screenshots-${{ matrix.e2e_runner }}-${{ matrix.frontend }}-${{ matrix.backend }}-${{ matrix.db }}
           path: e2e-cypress/cypress/screenshots
