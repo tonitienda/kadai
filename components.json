@@ -1,0 +1,51 @@
+{
+  "webapps": [
+    {
+      "id": "nextjs",
+      "language": "typescript",
+      "name": "nextjs"
+    },
+    {
+      "id": "htmx-go",
+      "language": "go",
+      "name": "HTMX"
+    }
+  ],
+  "backends": [
+    {
+      "id": "go",
+      "language": "go",
+      "name": "REST"
+    },
+    {
+      "id": "js",
+      "language": "js",
+      "name": "REST"
+    }
+  ],
+  "e2eRunners": [
+    {
+      "id": "cypress",
+      "language": "js",
+      "name": "E2E Cypress"
+    }
+  ],
+  "systemtestRunners": [
+    {
+      "id": "bdd-go",
+      "language": "go",
+      "name": "BDD"
+    }
+  ],
+
+  "dbs": [
+    {
+      "id": "inmemory",
+      "name": "In Memory"
+    },
+    {
+      "id": "mongo",
+      "name": "Mongo"
+    }
+  ]
+}

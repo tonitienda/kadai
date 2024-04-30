@@ -1,10 +1,11 @@
 const fs = require("node:fs");
-
-const frontEnds = ["nextjs", "htmx-go"];
-const backends = ["go", "js"];
-const e2eRunners = ["cypress"];
-const systemtests = ["bdd-go"];
-const dbs = ["inmemory", "mongo"];
+const {
+  webapps,
+  backends,
+  e2eRunners,
+  systemtestRunners,
+  dbs,
+} = require("./components.json");
 
 const makeJustE2ETestTasks = ({ frontend, backend, runner, db }) => `
 
@@ -61,29 +62,29 @@ start-${frontend}-${backend}-${db}:
 
 const apiCombinations = backends.flatMap((b) =>
   dbs.flatMap((db) => ({
-    backend: b,
-    db: db,
+    backend: b.id,
+    db: db.id,
   }))
 );
 
-const appCombinations = frontEnds.flatMap((f) =>
+const appCombinations = webapps.flatMap((f) =>
   apiCombinations.map((combination) => ({
     ...combination,
-    frontend: f,
+    frontend: f.id,
   }))
 );
 
 const systemTestsCombinations = apiCombinations.flatMap((a) =>
-  systemtests.flatMap((r) => ({
+  systemtestRunners.flatMap((r) => ({
     ...a,
-    runner: r,
+    runner: r.id,
   }))
 );
 
 const e2eTestsCombinations = appCombinations.flatMap((a) =>
   e2eRunners.flatMap((r) => ({
     ...a,
-    runner: r,
+    runner: r.id,
   }))
 );
 
