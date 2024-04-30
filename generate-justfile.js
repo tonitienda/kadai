@@ -16,7 +16,7 @@ ci-${runner}-${frontend}-${backend}-${db}:
      -f compose.db-${db}.yaml \\
      -f compose.e2e-${runner}.yaml \\
      -f compose.ci.yaml \\
-     up --build --exit-code-from e2e
+     up --no-build --exit-code-from e2e
 
 test-${runner}-${frontend}-${backend}-${db}:
   COMPOSE_PROJECT_NAME="kadai-${runner}-${frontend}-${backend}-${db}" docker compose \\
@@ -36,7 +36,7 @@ ci-${runner}-${backend}-${db}:
      -f compose.db-${db}.yaml \\
      -f compose.system-${runner}.yaml \\
      -f compose.ci.yaml \\
-     up --build --exit-code-from system
+     up  --no-build --exit-code-from system
 
 test-${runner}-${backend}-${db}:
   COMPOSE_PROJECT_NAME="kadai-${runner}-${backend}-${db}" docker compose \\
