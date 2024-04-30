@@ -15,7 +15,7 @@ ci-${runner}-${frontend}-${backend}-${db}:
      -f compose.backend-${backend}.yaml \\
      -f compose.db-${db}.yaml \\
      -f compose.e2e-${runner}.yaml \\
-     -f compose.ci.yaml
+     -f compose.ci.yaml \\
      up --build --exit-code-from e2e
 
 test-${runner}-${frontend}-${backend}-${db}:
