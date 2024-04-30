@@ -1,5 +1,5 @@
 services:
-  e2e:
+  system:
     build:
       dockerfile: Dockerfile
       context: bdd-go

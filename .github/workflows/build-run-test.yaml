@@ -15,6 +15,9 @@ jobs:
   # In build job and once for each backend when testing e2e
   build:
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
     strategy:
       matrix:
         service:
@@ -28,9 +31,16 @@ jobs:
           ]
     steps:
       - uses: actions/checkout@v4
+      - name: Log in to registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
       - name: Build Docker image
-        run: docker build -t ${{ matrix.service }} ${{ matrix.service }}
-  api:
+        run: |
+          docker build -t ${{ matrix.service }} ${{ matrix.service }} \
+          --tag ghcr.io/${{ github.repository_owner }}/kadai/${{ matrix.service }}:${GITHUB_SHA}
+      - name: Push Docker image
+        run: |
+          docker push ghcr.io/${{ github.repository_owner }}/kadai/${{ matrix.service }}:${GITHUB_SHA}
+  system:
     runs-on: ubuntu-latest
     needs: build
     strategy:
@@ -45,8 +55,14 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: echo "${{ secrets.DOT_ENV }}" > .env
+      - name: Log in to registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
       - name: Run Acceptance - API tests
-        run: just test-${{ matrix.runner }}-${{ matrix.backend }}-${{ matrix.db }}
+        run: |
+          WEBAPP_IMAGE="" \
+          BACKEND_IMAGE=ghcr.io/${{ github.repository_owner }}/kadai/backend-rest-${{ matrix.backend }}:${GITHUB_SHA} \
+          RUNNER_IMAGE=ghcr.io/${{ github.repository_owner }}/kadai/${{ matrix.runner }}:${GITHUB_SHA} \
+          just ci-${{ matrix.runner }}-${{ matrix.backend }}-${{ matrix.db }}
 
   e2e:
     runs-on: ubuntu-latest
@@ -64,8 +80,14 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: echo "${{ secrets.DOT_ENV }}" > .env
+      - name: Log in to registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
       - name: Run E2E tests
-        run: just test-${{ matrix.runner }}-${{ matrix.frontend }}-${{ matrix.backend }}-${{ matrix.db }}
+        run: |
+          WEBAPP_IMAGE=ghcr.io/${{ github.repository_owner }}/kadai/webapp-${{ matrix.frontend }}:${GITHUB_SHA} \
+          BACKEND_IMAGE=ghcr.io/${{ github.repository_owner }}/kadai/backend-rest-${{ matrix.backend }}:${GITHUB_SHA} \
+          RUNNER_IMAGE=ghcr.io/${{ github.repository_owner }}/kadai/e2e-${{ matrix.runner }}:${GITHUB_SHA} \
+          just ci-${{ matrix.runner }}-${{ matrix.frontend }}-${{ matrix.backend }}-${{ matrix.db }}
       - name: Upload test screenshots
         uses: actions/upload-artifact@v4.3.3
         with:
