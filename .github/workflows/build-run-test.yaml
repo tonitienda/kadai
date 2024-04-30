@@ -60,7 +60,7 @@ jobs:
       - name: Run Acceptance - API tests
         run: |
           WEBAPP_IMAGE="" \
-          BACKEND_IMAGE=ghcr.io/${{ github.repository_owner }}/kadai/${{ matrix.backend }}:${GITHUB_SHA} \
+          BACKEND_IMAGE=ghcr.io/${{ github.repository_owner }}/kadai/backend-${{ matrix.backend }}:${GITHUB_SHA} \
           RUNNER_IMAGE=ghcr.io/${{ github.repository_owner }}/kadai/${{ matrix.runner }}:${GITHUB_SHA} \
           just ci-${{ matrix.runner }}-${{ matrix.backend }}-${{ matrix.db }}
 
@@ -84,8 +84,8 @@ jobs:
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
       - name: Run E2E tests
         run: |
-          WEBAPP_IMAGE=ghcr.io/${{ github.repository_owner }}/kadai/${{ matrix.frontend }}:${GITHUB_SHA} \
-          BACKEND_IMAGE=ghcr.io/${{ github.repository_owner }}/kadai/${{ matrix.backend }}:${GITHUB_SHA} \
+          WEBAPP_IMAGE=ghcr.io/${{ github.repository_owner }}/kadai/webapp-${{ matrix.frontend }}:${GITHUB_SHA} \
+          BACKEND_IMAGE=ghcr.io/${{ github.repository_owner }}/kadai/backend-${{ matrix.backend }}:${GITHUB_SHA} \
           RUNNER_IMAGE=ghcr.io/${{ github.repository_owner }}/kadai/${{ matrix.runner }}:${GITHUB_SHA} \
           just ci-${{ matrix.runner }}-${{ matrix.frontend }}-${{ matrix.backend }}-${{ matrix.db }}
       - name: Upload test screenshots
