@@ -90,7 +90,7 @@ ci-cypress-nextjs-go-inmemory:
      -f compose.backend-go.yaml \
      -f compose.db-inmemory.yaml \
      -f compose.e2e-cypress.yaml \
-     -f compose.ci.yaml
+     -f compose.ci.yaml \
      up --build --exit-code-from e2e
 
 test-cypress-nextjs-go-inmemory:
@@ -110,7 +110,7 @@ ci-cypress-nextjs-go-mongo:
      -f compose.backend-go.yaml \
      -f compose.db-mongo.yaml \
      -f compose.e2e-cypress.yaml \
-     -f compose.ci.yaml
+     -f compose.ci.yaml \
      up --build --exit-code-from e2e
 
 test-cypress-nextjs-go-mongo:
@@ -130,7 +130,7 @@ ci-cypress-nextjs-js-inmemory:
      -f compose.backend-js.yaml \
      -f compose.db-inmemory.yaml \
      -f compose.e2e-cypress.yaml \
-     -f compose.ci.yaml
+     -f compose.ci.yaml \
      up --build --exit-code-from e2e
 
 test-cypress-nextjs-js-inmemory:
@@ -150,7 +150,7 @@ ci-cypress-nextjs-js-mongo:
      -f compose.backend-js.yaml \
      -f compose.db-mongo.yaml \
      -f compose.e2e-cypress.yaml \
-     -f compose.ci.yaml
+     -f compose.ci.yaml \
      up --build --exit-code-from e2e
 
 test-cypress-nextjs-js-mongo:
@@ -170,7 +170,7 @@ ci-cypress-htmx-go-go-inmemory:
      -f compose.backend-go.yaml \
      -f compose.db-inmemory.yaml \
      -f compose.e2e-cypress.yaml \
-     -f compose.ci.yaml
+     -f compose.ci.yaml \
      up --build --exit-code-from e2e
 
 test-cypress-htmx-go-go-inmemory:
@@ -190,7 +190,7 @@ ci-cypress-htmx-go-go-mongo:
      -f compose.backend-go.yaml \
      -f compose.db-mongo.yaml \
      -f compose.e2e-cypress.yaml \
-     -f compose.ci.yaml
+     -f compose.ci.yaml \
      up --build --exit-code-from e2e
 
 test-cypress-htmx-go-go-mongo:
@@ -210,7 +210,7 @@ ci-cypress-htmx-go-js-inmemory:
      -f compose.backend-js.yaml \
      -f compose.db-inmemory.yaml \
      -f compose.e2e-cypress.yaml \
-     -f compose.ci.yaml
+     -f compose.ci.yaml \
      up --build --exit-code-from e2e
 
 test-cypress-htmx-go-js-inmemory:
@@ -230,7 +230,7 @@ ci-cypress-htmx-go-js-mongo:
      -f compose.backend-js.yaml \
      -f compose.db-mongo.yaml \
      -f compose.e2e-cypress.yaml \
-     -f compose.ci.yaml
+     -f compose.ci.yaml \
      up --build --exit-code-from e2e
 
 test-cypress-htmx-go-js-mongo:
