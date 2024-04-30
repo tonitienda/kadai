@@ -10,8 +10,8 @@ import (
 	"os"
 	"strings"
 
-	authenticator "github.com/tonitienda/kadai/webapp-golang-htmx/pkg/auth"
-	"github.com/tonitienda/kadai/webapp-golang-htmx/pkg/tasks"
+	authenticator "github.com/tonitienda/kadai/webapp-htmx-go/pkg/auth"
+	"github.com/tonitienda/kadai/webapp-htmx-go/pkg/tasks"
 	"golang.org/x/oauth2"
 )
 

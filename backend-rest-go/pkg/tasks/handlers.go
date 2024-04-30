@@ -7,7 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
-	"github.com/tonitienda/kadai/backend-golang-rest/pkg/common"
+	"github.com/tonitienda/kadai/backend-rest-go/pkg/common"
 )
 
 const (

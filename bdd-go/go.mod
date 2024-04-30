@@ -1,4 +1,4 @@
-module github.com/tonitienda/kadai/acceptance-go
+module github.com/tonitienda/kadai/bdd-go
 
 go 1.22.1
 

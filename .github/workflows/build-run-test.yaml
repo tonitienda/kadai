@@ -19,11 +19,12 @@ jobs:
       matrix:
         service:
           [
-            backend-golang-rest,
-            backend-js-rest,
-            webapp-golang-htmx,
+            backend-rest-go,
+            backend-rest-js,
+            webapp-htmx-go,
             webapp-nextjs,
             e2e-cypress,
+            bdd-go,
           ]
     steps:
       - uses: actions/checkout@v4
@@ -53,7 +54,7 @@ jobs:
     strategy:
       matrix:
         runner: [cypress]
-        frontend: [next, golang-htmx]
+        frontend: [nextjs, htmx-go]
         backend: [go, js]
         db: [inmemory, mongo]
     steps:

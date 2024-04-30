@@ -1,41 +1,28 @@
 const fs = require("node:fs");
 
-const frontEnds = ["next", "golang-htmx"];
+const frontEnds = ["nextjs", "htmx-go"];
 const backends = ["go", "js"];
 const e2eRunners = ["cypress"];
-const apiRunners = ["bdd-go"];
+const systemtests = ["bdd-go"];
 const dbs = ["inmemory", "mongo"];
 
 const makeJustE2ETestTasks = ({ frontend, backend, runner, db }) => `
 test-${runner}-${frontend}-${backend}-${db}:
-  docker compose \\
-  -f compose.${frontend}-frontend.yaml \\
-  -f compose.${backend}-backend.yaml \\
-  -f compose.db-${db}.yaml \\
-  -f compose.e2e-${runner}.yaml \\
-  config
-
   COMPOSE_PROJECT_NAME="kadai-${runner}-${frontend}-${backend}-${db}" docker compose \\
-     -f compose.${frontend}-frontend.yaml \\
-     -f compose.${backend}-backend.yaml \\
+     -f compose.frontend-${frontend}.yaml \\
+     -f compose.backend-${backend}.yaml \\
      -f compose.db-${db}.yaml \\
      -f compose.e2e-${runner}.yaml \\
      up --build --exit-code-from e2e
 
 `;
 
-const makeJustApiTestTasks = ({ backend, runner, db }) => `
+const makeJustSystemTestTasks = ({ backend, runner, db }) => `
 test-${runner}-${backend}-${db}:
-  docker compose \\
-  -f compose.${backend}-backend.yaml \\
-  -f compose.db-${db}.yaml \\
-  -f compose.e2e-${runner}.yaml \\
-  config
-
   COMPOSE_PROJECT_NAME="kadai-${runner}-${backend}-${db}" docker compose \\
-     -f compose.${backend}-backend.yaml \\
+     -f compose.backend-${backend}.yaml \\
      -f compose.db-${db}.yaml \\
-     -f compose.e2e-${runner}.yaml \\
+     -f compose.system-${runner}.yaml \\
      up --build --exit-code-from e2e
 
 `;
@@ -43,12 +30,6 @@ test-${runner}-${backend}-${db}:
 const makeJustStartTasks = ({ frontend, backend, db }) => `
    
 start-${frontend}-${backend}-${db}:
-  docker compose \\
-  -f compose.${frontend}-frontend.yaml \\
-  -f compose.${backend}-backend.yaml \\
-  -f compose.db-${db}.yaml \\
-  config
-
   COMPOSE_PROJECT_NAME="kadai-${frontend}-${backend}-${db}" docker compose \\
       -f compose.${frontend}-frontend.yaml \\
       -f compose.${backend}-backend.yaml \\
@@ -72,8 +53,8 @@ const appCombinations = frontEnds.flatMap((f) =>
   }))
 );
 
-const apiTestsCombinations = apiCombinations.flatMap((a) =>
-  apiRunners.flatMap((r) => ({
+const systemTestsCombinations = apiCombinations.flatMap((a) =>
+  systemtests.flatMap((r) => ({
     ...a,
     runner: r,
   }))
@@ -87,6 +68,10 @@ const e2eTestsCombinations = appCombinations.flatMap((a) =>
 );
 
 const contents =
+  `
+unit-test:
+  @echo "No unit tests found"
+` +
   appCombinations.reduce(
     (contents, combination) => contents + makeJustStartTasks(combination),
     ""
@@ -95,8 +80,8 @@ const contents =
     (contents, combination) => contents + makeJustE2ETestTasks(combination),
     ""
   ) +
-  apiTestsCombinations.reduce(
-    (contents, combination) => contents + makeJustApiTestTasks(combination),
+  systemTestsCombinations.reduce(
+    (contents, combination) => contents + makeJustSystemTestTasks(combination),
     ""
   );
 

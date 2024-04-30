@@ -1,4 +1,4 @@
-module github.com/tonitienda/kadai/webapp-golang-htmx
+module github.com/tonitienda/kadai/webapp-htmx-go
 
 go 1.22.1
 
