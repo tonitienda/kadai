@@ -1,20 +1,20 @@
 services:
   e2e:
-    image: RUNNER_IMAGE
-    build:
+    image: $RUNNER_IMAGE
+    build: ""
     profiles: [e2e]
 
   system:
-    images: RUNNER_IMAGE
-    build:
+    image: $RUNNER_IMAGE
+    build: ""
     profiles: [system]
 
   webapp:
-    image: WEBAPP_IMAGE
-    build:
+    image: $WEBAPP_IMAGE
+    build: ""
     profiles: [e2e]
 
   backend:
-    image: BACKEND_IMAGE
-    build:
+    image: $BACKEND_IMAGE
+    build: ""
     profiles: [e2e, system]

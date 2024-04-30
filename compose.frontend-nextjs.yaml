@@ -1,11 +1,8 @@
 services:
   webapp:
-    image: ghcr.io/tonitienda/kadai/webapp-nextjs:c93b80aecef329093441b70800dbed25b3942aa2
     build:
       dockerfile: Dockerfile
       context: ./webapp-nextjs
-      when: 
-        - BUILD_IMAGES_LOCALLY==true
     depends_on:
       - backend
     volumes:
