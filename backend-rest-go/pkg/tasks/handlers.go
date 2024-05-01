@@ -1,6 +1,12 @@
 package tasks
 
 import (
+	_ "embed"
+	"encoding/json"
+	"errors"
+	"io"
+	"strings"
+
 	"fmt"
 	"net/http"
 	"time"
@@ -8,12 +14,50 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/tonitienda/kadai/backend-rest-go/pkg/common"
+	"github.com/xeipuuv/gojsonschema"
 )
+
+//go:embed add_task_schema.json
+var add_task_schema_schema []byte
+var add_task_schema_loaded_schema gojsonschema.JSONLoader
 
 const (
 	TaskStatusPending = "pending"
 	TaskStatusDone    = "done"
 )
+
+func init() {
+	add_task_schema_loaded_schema = gojsonschema.NewBytesLoader(add_task_schema_schema)
+
+}
+
+func DeserializeTask(input []byte) (Task, error) {
+	task := Task{}
+	document := gojsonschema.NewBytesLoader(input)
+	result, err := gojsonschema.Validate(add_task_schema_loaded_schema, document)
+
+	if err != nil {
+		return task, err
+	}
+
+	if !result.Valid() {
+		errorMsgs := []string{}
+		for _, resultError := range result.Errors() {
+
+			errorMsgs = append(errorMsgs, resultError.String())
+		}
+
+		return task, errors.New("Validation failed: " + strings.Join(errorMsgs, ", "))
+	}
+
+	unmarshall_err := json.Unmarshal(input, &task)
+
+	if unmarshall_err != nil {
+		return task, unmarshall_err
+	}
+
+	return task, nil
+}
 
 type Task struct {
 	ID          string
@@ -67,21 +111,19 @@ func (h *TasksHandler) GetTasks(c *gin.Context) error {
 func (h *TasksHandler) AddTask(c *gin.Context) error {
 	userId := c.GetString("userId")
 
-	// Get title and description from the JSON request body
-	var json map[string]string
-	if err := c.ShouldBindJSON(&json); err != nil {
-		return err
+	jsonInput, err := io.ReadAll(c.Request.Body)
+
+	task, err := DeserializeTask(jsonInput)
+
+	if err != nil {
+		return common.NewValidationError(err.Error())
 	}
 
-	task := Task{
-		OwnerID:     userId,
-		Title:       json["title"],
-		Description: json["description"],
-		Status:      TaskStatusPending,
-	}
 	task.ID = uuid.New().String()
+	task.OwnerID = userId
+	task.Status = TaskStatusPending
 
-	err := h.datasource.AddTask(task)
+	err = h.datasource.AddTask(task)
 
 	if err != nil {
 		return err
