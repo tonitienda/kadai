@@ -1,17 +1,29 @@
 const express = require("express");
 const { v4: uuidv4 } = require("uuid");
+const Ajv = require("ajv");
 const core = require("./core");
+const addTaskSchema = require("./add_task_schema.json");
 
 // TODO - Implement auth and get user id by token
 const ownerId = "6c8d5572-a815-49aa-9e6d-7fee79ddd59d";
 
 function makeTaskRouter(datasource) {
+  const ajv = new Ajv();
+
   const router = express.Router();
 
+  const validateAddTask = ajv.compile(addTaskSchema);
+
   async function addTask(req, res) {
+    const valid = validateAddTask(req.body);
+    if (!valid) {
+      res.status(400).json(validateAddTask.errors);
+      return;
+    }
+
     const task = req.body;
-    // TODO - Add validation
-    console.log("task: ", task);
+
+    console.log("Task is valid:", task);
     task.id = uuidv4();
     task.ownerId = ownerId;
     task.status = "pending";

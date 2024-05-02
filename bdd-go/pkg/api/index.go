@@ -97,6 +97,7 @@ func (a *ApiTests) UserAddsTask(user string, title string, description string) e
 	req, _ := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))
 
 	token, isUserLoggedIn := a.UserTokens[user]
+	req.Header.Add("content-type", "application/json")
 
 	fmt.Printf("User tokens: %v", a.UserTokens)
 	if isUserLoggedIn {
