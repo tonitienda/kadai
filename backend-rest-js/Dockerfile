@@ -13,4 +13,7 @@ FROM node:18-alpine as production
 WORKDIR /app
 COPY --from=build /app/dist/ ./dist/
 
+
+HEALTHCHECK --interval=10s --timeout=1s --retries=3 CMD wget --tries=1 --spider http://localhost:8080/healthz || exit 1
+
 CMD ["node", "dist/index.js"]

@@ -4,7 +4,8 @@ services:
       dockerfile: Dockerfile
       context: e2e-cypress
     depends_on:
-      - webapp
+      webapp:
+        condition: service_healthy
     volumes:
       - ./e2e-cypress/cypress/screenshots:/app/cypress/screenshots
       - .env:/app/.env

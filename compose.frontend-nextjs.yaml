@@ -4,8 +4,10 @@ services:
       dockerfile: Dockerfile
       context: ./webapp-nextjs
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
     volumes:
       - .env:/app/.env.local
+    
 
      
