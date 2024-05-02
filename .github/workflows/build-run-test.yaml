@@ -73,7 +73,7 @@ jobs:
       matrix:
         runner: [cypress]
         frontend: [nextjs, htmx-go]
-        backend: [go, js]
+        backend: [go, js, clojure]
         db: [inmemory, mongo]
       fail-fast: false
     steps:
