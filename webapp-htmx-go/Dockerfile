@@ -17,4 +17,7 @@ COPY --from=builder /app/templates ./templates
 
 EXPOSE 8080
 
+
+HEALTHCHECK --interval=10s --timeout=1s --retries=3 CMD wget --tries=1 --spider http://localhost:3000/healthz || exit 1
+
 CMD ["./server"]

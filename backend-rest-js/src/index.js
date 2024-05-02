@@ -11,6 +11,10 @@ app.use((req, res, next) => {
   next();
 });
 
+app.get("/healthz", (req, res) => {
+  res.json(`{"message": "OK"}`);
+});
+
 app.use("/v0", v0);
 v0.use("/tasks", tasks);
 

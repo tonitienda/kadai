@@ -46,6 +46,12 @@ func main() {
 		return
 	}
 
+	http.HandleFunc("GET /healthz", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println("GET /healthz")
+
+		w.Write([]byte(`{"message":"OK" }`))
+	})
+
 	http.HandleFunc("GET /login", func(w http.ResponseWriter, r *http.Request) {
 
 		state, err := generateRandomState()
