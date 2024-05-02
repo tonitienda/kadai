@@ -52,8 +52,8 @@ const makeJustStartTasks = ({ frontend, backend, db }) => `
    
 start-${frontend}-${backend}-${db}:
   COMPOSE_PROJECT_NAME="kadai-${frontend}-${backend}-${db}" docker compose \\
-      -f compose.${frontend}-frontend.yaml \\
-      -f compose.${backend}-backend.yaml \\
+      -f compose.frontend-${frontend}.yaml \\
+      -f compose.backend-${backend}.yaml \\
       -f compose.db-${db}.yaml \\
       -f compose.expose-ports.yaml \\
       up --build

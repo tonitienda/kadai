@@ -48,6 +48,7 @@ jobs:
         runner: [bdd-go]
         backend: [go, js]
         db: [inmemory, mongo]
+      fail-fast: false
     steps:
       - uses: actions/checkout@v4
       - uses: extractions/setup-just@v2
@@ -73,6 +74,7 @@ jobs:
         frontend: [nextjs, htmx-go]
         backend: [go, js]
         db: [inmemory, mongo]
+      fail-fast: false
     steps:
       - uses: actions/checkout@v4
       - uses: extractions/setup-just@v2

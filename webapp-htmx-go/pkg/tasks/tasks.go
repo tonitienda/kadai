@@ -81,6 +81,7 @@ func AddTask(token string, title string, description string) error {
 		// TODO - See this
 		return err
 	}
+	req.Header.Set("content-type", "application/json")
 
 	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", token))
 	res, err := http.DefaultClient.Do(req)
