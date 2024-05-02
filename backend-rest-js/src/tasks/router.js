@@ -15,6 +15,8 @@ function makeTaskRouter(datasource) {
   const validateAddTask = ajv.compile(addTaskSchema);
 
   async function addTask(req, res) {
+    console.log("Add Task Body:", req.body);
+
     const valid = validateAddTask(req.body);
     if (!valid) {
       res.status(400).json(validateAddTask.errors);
