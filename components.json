@@ -21,6 +21,11 @@
       "id": "js",
       "language": "js",
       "name": "REST"
+    },
+    {
+      "id": "clojure",
+      "language": "clojure",
+      "name": "REST"
     }
   ],
   "e2eRunners": [

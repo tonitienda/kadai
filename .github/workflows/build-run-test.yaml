@@ -24,6 +24,7 @@ jobs:
           [
             backend-rest-go,
             backend-rest-js,
+            backend-rest-clojure,
             webapp-htmx-go,
             webapp-nextjs,
             e2e-cypress,
@@ -46,7 +47,7 @@ jobs:
     strategy:
       matrix:
         runner: [bdd-go]
-        backend: [go, js]
+        backend: [go, js, clojure]
         db: [inmemory, mongo]
       fail-fast: false
     steps:
