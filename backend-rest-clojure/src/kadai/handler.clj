@@ -7,6 +7,11 @@
 (defroutes app-routes
   (GET "/" [] "Hello World")
   (GET "/healthz" [] (json/write-str {:message "ok"}))
+
+  (GET "/v0/tasks" [] [])
+  (POST "/v0/tasks" [] (json/write-str {}))
+  (DELETE "/v0/tasks/:id" [] (json/write-str {}))
+
   (route/not-found "Not Found"))
 
 (def app
