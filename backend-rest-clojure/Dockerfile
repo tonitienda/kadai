@@ -6,10 +6,10 @@ WORKDIR /app
 
 
 # TODO: Use a lightweight base image
-FROM clojure:latest as runtime
+FROM clojure:latest
 
 WORKDIR /app
 
 COPY . .
 
-ENTRYPOINT  ["lein", "run"]
+ENTRYPOINT  ["lein", "ring", "serve-headless", "8080"]
