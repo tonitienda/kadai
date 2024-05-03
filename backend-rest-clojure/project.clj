@@ -5,7 +5,9 @@
   :dependencies [[org.clojure/clojure "1.10.0"]
                  [compojure "1.6.1"]
                  [org.clojure/data.json "2.5.0"]
-                 [ring/ring-defaults "0.3.2"]]
+                 [ring/ring-defaults "0.3.2"]
+                 [ring/ring-core "1.9.0"]
+                 [ring/ring-json "0.5.0"]]
   :plugins [[lein-ring "0.12.5"]]
   :ring {:handler kadai.handler/app}
   :profiles
