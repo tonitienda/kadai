@@ -1,14 +1,15 @@
-# Stage 1: Build the Go binary
-FROM alpine:3.19
+FROM clojure:latest as build
+
+# Set the working directory in the container
+WORKDIR /app
+
+
+
+# TODO: Use a lightweight base image
+FROM clojure:latest as runtime
 
 WORKDIR /app
 
 COPY . .
 
-EXPOSE 8080
-
-
-# HEALTHCHECK --interval=10s --timeout=1s --retries=3 CMD wget --tries=1 --spider http://localhost:8080/healthz || exit 1
-HEALTHCHECK --interval=10s --timeout=1s --retries=3 CMD echo "hello"
-
-CMD ["./server"]
+ENTRYPOINT  ["lein", "run"]
