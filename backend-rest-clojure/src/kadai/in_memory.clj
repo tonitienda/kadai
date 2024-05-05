@@ -2,32 +2,29 @@
   (:require [datomic.api :as d]
             [kadai.tasks :as tasks]))
 
-(defn initialize-db []
-  (let [uri "datomic:mem://kadai"]
-    (d/create-database uri)
-    (d/connect uri)))
 
 (defrecord DatomicTasksDataSource [db]
   tasks/TasksDataSource
   (get-tasks [this owner-id]
-    (let [query '[:find ?id ?owner ?title ?description ?status ?deleted-at ?deleted-by
-                  :where
-                  [?task :task/owner ?owner]
-                  [?task :task/title ?title]
-                  [?task :task/description ?description]
-                  [?task :task/status ?status]
-                  [?task :task/deleted-at ?deleted-at]
-                  [?task :task/deleted-by ?deleted-by]]
-          results (d/q query db)]
-      (map (fn [[id owner title description status deleted-at deleted-by]]
-             {:id id
-              :owner owner
-              :title title
-              :description description
-              :status status
-              :deleted-at deleted-at
-              :deleted-by deleted-by})
-           results)))
+  (let [query '[:find ?task ?title ?description ?status ?deleted-at ?deleted-by
+                :where
+                [?task :task/owner ?owner]
+                [?task :task/title ?title]
+                [?task :task/description ?description]
+                [?task :task/status ?status]
+                [?task :task/deleted-at ?deleted-at]
+                [?task :task/deleted-by ?deleted-by]
+                [(get-else ?task :db/id #uuid "00000000-0000-0000-0000-000000000000") ?owner ?title ?description ?status ?deleted-at ?deleted-by]]
+        results (d/q query db owner-id)]
+    (map (fn [[id title description status deleted-at deleted-by]]
+           {:id id
+            :owner owner-id
+            :title title
+            :description description
+            :status status
+            :deleted-at deleted-at
+            :deleted-by deleted-by})
+         results)))
 
   (get-task [this id]
     (let [query '[:find ?owner ?title ?description ?status ?deleted-at ?deleted-by
@@ -77,3 +74,11 @@
                          :task/status ~(-> task :status)
                          :task/deleted-at ~(-> task :deleted-at)
                          :task/deleted-by ~(-> task :deleted-by))])))
+
+
+
+(defn initialize-db []
+  (let [uri "datomic:mem://kadai"
+        db (d/create-database uri)
+        conn (d/connect uri)]
+    (->DatomicTasksDataSource conn)))
