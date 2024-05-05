@@ -1,5 +1,5 @@
 (ns kadai.core
-  (:require [compojure.core :refer [defroutes GET POST DELETE]]
+  (:require [compojure.core :refer [defroutes routes GET POST DELETE]]
             [compojure.route :as route]
             [org.httpkit.server :as hk-server]
             [clojure.data.json :as json]
@@ -18,8 +18,8 @@
     (f db req)))
 
 
-(defroutes all-routes
-  (let [db (in-memory/initialize-db)]
+(defn routes-with-db [db]
+  (routes
     (GET "/healthz" [] handle-health)
     (GET "/v0/tasks" [] (make-handler db tasks/handle-get-tasks))
     (POST "/v0/tasks" [] (make-handler db tasks/handle-post-tasks))
@@ -28,4 +28,6 @@
 
 
 (defn start-server [_argc]
-  (hk-server/run-server all-routes {:port 8080}))
+  (let [db (in-memory/initialize-db)
+        all-routes (routes-with-db db)]
+    (hk-server/run-server all-routes {:port 8080})))
