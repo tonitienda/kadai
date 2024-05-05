@@ -3,8 +3,8 @@ FROM clojure:latest
 
 WORKDIR /app
 
-RUN apt update && apt upgrade && \
-    apt install wget
+RUN apt update && apt upgrade -y && \
+    apt install -f wget
 
 COPY . .
 
