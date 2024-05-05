@@ -41,9 +41,9 @@ jobs:
       - name: Push Docker image
         run: |
           docker push ghcr.io/${{ github.repository_owner }}/kadai/${{ matrix.service }}:${GITHUB_SHA}
-      - name: Check Docker image details:
+      - name: Check Docker image details
         run: |
-          docker manifest inspect  ghcr.io/${{ github.repository_owner }}/kadai/${{ matrix.service }}:${GITHUB_SHA}
+          docker manifest inspect ghcr.io/${{ github.repository_owner }}/kadai/${{ matrix.service }}:${GITHUB_SHA}
   system:
     runs-on: ubuntu-latest
     needs: build
