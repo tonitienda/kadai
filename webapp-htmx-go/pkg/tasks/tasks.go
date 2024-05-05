@@ -21,7 +21,6 @@ type Undo struct {
 }
 
 func GetTasks(token string) ([]Task, error) {
-	fmt.Println("Getting tasks...")
 
 	req, err := http.NewRequest(http.MethodGet, "http://backend:8080/v0/tasks", nil)
 	if err != nil {
