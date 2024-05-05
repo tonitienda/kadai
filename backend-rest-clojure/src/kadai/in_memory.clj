@@ -6,7 +6,7 @@
 (defrecord DatomicTasksDataSource [db]
   tasks/TasksDataSource
   (get-tasks [this owner-id]
-  (let [query '[:find ?task ?title ?description ?status ?deleted-at ?deleted-by
+  (let [query '[:find ?title ?description ?status ?deleted-at ?deleted-by
                 :where
                 [?task :task/owner ?owner]
                 [?task :task/title ?title]
@@ -14,11 +14,10 @@
                 [?task :task/status ?status]
                 [?task :task/deleted-at ?deleted-at]
                 [?task :task/deleted-by ?deleted-by]
-                [(get-else ?task :db/id #uuid "00000000-0000-0000-0000-000000000000") ?owner ?title ?description ?status ?deleted-at ?deleted-by]]
-        results (d/q query db owner-id)]
-    (map (fn [[id title description status deleted-at deleted-by]]
-           {:id id
-            :owner owner-id
+                [(= ?owner owner-id)]]
+        results (d/q query db)]
+    (map (fn [[title description status deleted-at deleted-by]]
+           {:owner owner-id
             :title title
             :description description
             :status status

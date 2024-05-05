@@ -1,6 +1,14 @@
 (ns kadai.tasks
-  (:require [clojure.data.json :as json]))
+  (:require 
+    [clojure.data.json :as json]
+    [malli.core :as m]))
 
+(def TaskRequest [
+    :map [
+        [:title :string {:min 1, :max 200}]
+        [:description :string {:min 1, :max 3000}]
+    ]
+])
 
 (defprotocol TasksDataSource
   (get-tasks [this owner-id])
@@ -16,12 +24,12 @@
     :body   (json/write-str (get-tasks db "03c6eb30-e65f-49fd-92c2-a207f03bbf51"))}
 )
 
-
 (defn handle-post-tasks [db req]
-    {:status  202
-    :headers {"Content-Type" "application/json"}
-    :body   nil}
-)
+  (let [body (:body req)]
+        (if (m/validate TaskRequest body)
+        {:status 400}
+        {:status 200  :headers {"Content-Type" "application/json" :body   nil}})))
+
 
 (defn handle-undo-delete-task [db req]
     {:status  202
