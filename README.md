@@ -25,6 +25,7 @@ I am marking with ✔️ the technologies/approaches I am using and with 🚧 th
 ### Current Technologies
 
 ```mermaid
+
 flowchart TD
 
 subgraph webapps
@@ -45,6 +46,9 @@ subgraph backends
 
      js["REST
      [js]"]
+
+     clojure["REST
+     [clojure]"]
 end
 
 subgraph dbs
@@ -81,7 +85,7 @@ classDef TestService fill:#11bd68,color:#333,stroke:#333
 
 class e2e,systemtests Tests
 class webapps,backends,dbs Tier
-class nextjs,htmx-go,go,js,inmemory,mongo Service
+class nextjs,htmx-go,go,js,clojure,inmemory,mongo Service
 class cypress,bdd-go TestService
 ```
 
