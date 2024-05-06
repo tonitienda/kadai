@@ -25,7 +25,7 @@ export const GET = async function getTasks() {
 
 export const POST = async function addTask(req: Request) {
   const reqData = await req.json();
-
+  console.log("adding a new task");
   const res = await fetch(buildUrl("/v0/tasks"), {
     method: "POST",
     body: JSON.stringify({
@@ -41,8 +41,13 @@ export const POST = async function addTask(req: Request) {
 
   if (!res.ok) {
     // This will activate the closest `error.js` Error Boundary
+    console.log("failed to add a new task");
+    console.error(await res.status);
+    console.error(await res.text());
     throw new Error("Failed to add task");
   }
+
+  console.log("task added successfully");
 
   const resData = res.json();
   return Response.json(resData);
